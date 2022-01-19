@@ -42,16 +42,19 @@ namespace TrezorKeyProviderPlugin
 
     public class TrezorDevice : IDisposable
     {
-        #region Fields
-        private static readonly string[] _Addresses = new string[50];
-        private static ILogger Logger = new DeviceLogger(@"r:\trezor.log");
-        private static ILogger DevLogger = new DeviceLogger(@"r:\trezor_dev.log");
-        private static ILogger UsbLogger = new DeviceLogger(@"r:\trezor_usb.log");
-        private byte[] salt;
-        private string keyId;
-        //private static readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => _ = builder.AddDebug().SetMinimumLevel(LogLevel.Trace));
-        #endregion
+        public enum TrezorState
+        {
+            Disconnected,
+            Connected,
+            ButtonRequest,
+            Confirmed,
+            WaitPin,
+            WaitPassfrase,
+            Error,
+            Processing,
+        }
 
+        #region Constructors
         public TrezorDevice(byte[] keyId = null)
         {
             // Source 256-bit message to generate key in Trezor.
@@ -61,7 +64,9 @@ namespace TrezorKeyProviderPlugin
                 ? Convert.ToBase64String(keyId)
                 : null;
         }
+        #endregion Constructor
 
+        #region Public Methods
         public void Log(string message, string region, Exception ex, LogLevel logLevel)
         {
             //if (region == "TrezorManagerBase" && message.Contains(typeof(Trezor.Net.Contracts.Common.ButtonRequest).FullName))
@@ -71,19 +76,12 @@ namespace TrezorKeyProviderPlugin
             DevLogger.Log(message, region, ex, logLevel);
         }
 
-        #region Private  Methods
-
-        private TrezorManager _trezorManager;
-
         public void Close()
         {
             cancellation.Cancel();
             _trezorManager?.Device?.Close();
             _TrezorManagerBroker?.Stop();
         }
-
-        static IDeviceFactory usbFactory = null;
-        static TrezorManagerBroker _TrezorManagerBroker = null;
 
         /// <summary>
         /// TODO: This should be made in to a unit test but it's annoying to add the UI for a unit test as the Trezor requires human intervention for the pin
@@ -143,12 +141,12 @@ namespace TrezorKeyProviderPlugin
 
                         var cipherKeyValue = new CipherKeyValue()
                         {
-                            Key = "KeePass" + (keyId != null ? (" " + keyId) : ""),
+                            Key = "Unlock encrypted storage?",// "KeePass" + (keyId != null ? (" " + keyId) : ""),
                             AskOnDecrypt = true,
-                            AskOnEncrypt = false,
-                            Encrypt = false,
+                            AskOnEncrypt = true,
+                            Encrypt = true,
                             Value = salt,
-                            AddressNs = AddressPathBase.Parse<BIP44AddressPath>("m/1'/2'/3'").ToArray()
+                            AddressNs = AddressPathBase.Parse<BIP44AddressPath>("m/10016'/0"/*"m/1'/2'/3'"*/).ToArray()
                         };
                         var res = await _trezorManager.SendMessageAsync<CipheredKeyValue, CipherKeyValue>(cipherKeyValue);
                         SetState(TrezorState.Confirmed, "Operation confirmed");
@@ -178,11 +176,6 @@ namespace TrezorKeyProviderPlugin
             }
         }
 
-        CancellationTokenSource cancellation = new CancellationTokenSource();
-        ManualResetEvent _pinEvent = new ManualResetEvent(false);
-        AutoResetEvent _connectionClosed = new AutoResetEvent(false);
-        private string _lastPin = null;
-
         public void SetPin(string pin)
         {
             Logger.Log("Setting pin...", null, null, LogLevel.Information);
@@ -191,6 +184,59 @@ namespace TrezorKeyProviderPlugin
                 SetState(TrezorState.Processing);
             _pinEvent.Set();
         }
+        public void Initialize()
+        {
+            SetState(TrezorState.Disconnected);
+        }
+
+        public TrezorState State
+        {
+            get => state;
+        }
+
+        public string StateMessage
+        {
+            get => stateMessage;
+        }
+
+        public void SetState(TrezorState state, string message = null)
+        {
+            if (this.state != state)
+            {
+                this.state = state;
+                this.stateMessage = message;
+                OnChangeState(this, new TrezorStateEvent(state, message));
+            }
+        }
+
+        public event EventHandler<TrezorStateEvent> OnChangeState;
+
+        public void Dispose()
+        {
+        }
+
+        #endregion Public Methods
+
+        #region Private Fields
+        private TrezorManager _trezorManager;
+        private static IDeviceFactory usbFactory = null;
+        private static TrezorManagerBroker _TrezorManagerBroker = null;
+        private CancellationTokenSource cancellation = new CancellationTokenSource();
+        private ManualResetEvent _pinEvent = new ManualResetEvent(false);
+        private AutoResetEvent _connectionClosed = new AutoResetEvent(false);
+        private string _lastPin = null;
+        private TrezorState state;
+        private string stateMessage;
+        private static readonly string[] _Addresses = new string[50];
+        private static ILogger Logger = new DeviceLogger(@"r:\trezor.log");
+        private static ILogger DevLogger = new DeviceLogger(@"r:\trezor_dev.log");
+        private static ILogger UsbLogger = new DeviceLogger(@"r:\trezor_usb.log");
+        private byte[] salt;
+        private string keyId;
+        //private static readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => _ = builder.AddDebug().SetMinimumLevel(LogLevel.Trace));
+        #endregion Private Fields
+
+        #region Private Methods
 
         private Task<string> GetPin()
         => Task.Run(() =>
@@ -215,56 +261,6 @@ namespace TrezorKeyProviderPlugin
 
         private Task<string> GetPassphrase() => GetPin();
 
-        public void Initialize()
-        {
-            SetState(TrezorState.Disconnected);
-        }
-
-        public enum TrezorState
-        {
-            Disconnected,
-            Connected,
-            ButtonRequest,
-            Confirmed,
-            WaitPin,
-            WaitPassfrase,
-            Error,
-            Processing,
-        }
-
-        private TrezorState state;
-
-        public TrezorState State
-        {
-            get => state;
-        }
-
-        private string stateMessage;
-
-        public string StateMessage
-        {
-            get => stateMessage;
-        }
-
-        public void SetState(TrezorState state, string message = null)
-        {
-            if (this.state != state)
-            {
-                this.state = state;
-                this.stateMessage = message;
-                OnChangeState(this, new TrezorStateEvent(state, message));
-            }
-        }
-
-        public event EventHandler<TrezorStateEvent> OnChangeState;
-
-        public event EventHandler<int> OnGetPin;
-
-        public void Dispose()
-        {
-
-        }
-
-        #endregion
+        #endregion Private Methods
     }
 }
