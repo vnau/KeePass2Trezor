@@ -1,6 +1,7 @@
 ﻿using Device.Net;
 using Hardwarewallets.Net.AddressManagement;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
@@ -20,10 +21,10 @@ namespace TrezorKeyProviderPlugin
         void Log(string message, string region, Exception ex, LogLevel logLevel);
     }
 
-    class MyLogger : ILogger
+    class DeviceLogger : ILogger
     {
-        private string filename;
-        public MyLogger(string filename)
+        private readonly string filename;
+        public DeviceLogger(string filename)
         {
             this.filename = filename;
         }
@@ -43,11 +44,23 @@ namespace TrezorKeyProviderPlugin
     {
         #region Fields
         private static readonly string[] _Addresses = new string[50];
-        private static ILogger Logger = new MyLogger(@"r:\trezor.log");
-        private static ILogger DevLogger = new MyLogger(@"r:\trezor_dev.log");
-        private static ILogger UsbLogger = new MyLogger(@"r:\trezor_usb.log");
+        private static ILogger Logger = new DeviceLogger(@"r:\trezor.log");
+        private static ILogger DevLogger = new DeviceLogger(@"r:\trezor_dev.log");
+        private static ILogger UsbLogger = new DeviceLogger(@"r:\trezor_usb.log");
+        private byte[] salt;
+        private string keyId;
         //private static readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => _ = builder.AddDebug().SetMinimumLevel(LogLevel.Trace));
         #endregion
+
+        public TrezorDevice(byte[] keyId = null)
+        {
+            // Source 256-bit message to generate key in Trezor.
+            // Consists of 4DEC0DED bytes repeated 8 times.
+            this.salt = Enumerable.Repeat(new byte[4] { 0x4D, 0xEC, 0x0D, 0xED }, 8).SelectMany(b => b).ToArray();
+            this.keyId = keyId != null
+                ? Convert.ToBase64String(keyId)
+                : null;
+        }
 
         public void Log(string message, string region, Exception ex, LogLevel logLevel)
         {
@@ -130,22 +143,17 @@ namespace TrezorKeyProviderPlugin
 
                         var cipherKeyValue = new CipherKeyValue()
                         {
-                            Key = "KeePass Database",
+                            Key = "KeePass" + (keyId != null ? (" " + keyId) : ""),
                             AskOnDecrypt = true,
                             AskOnEncrypt = false,
                             Encrypt = false,
-                            Value = new byte[16] { 0x4D, 0xEC, 0x0D, 0xED, 0x4D, 0xEC, 0x0D, 0xED, 0x4D, 0xEC, 0x0D, 0xED, 0x4D, 0xEC, 0x0D, 0xED },
+                            Value = salt,
                             AddressNs = AddressPathBase.Parse<BIP44AddressPath>("m/1'/2'/3'").ToArray()
                         };
                         var res = await _trezorManager.SendMessageAsync<CipheredKeyValue, CipherKeyValue>(cipherKeyValue);
                         SetState(TrezorState.Confirmed, "Operation confirmed");
                         return res.Value;
                         Logger.Log("All good", null, null, LogLevel.Information);
-                        //while (true)
-                        //{
-                        //    Console.WriteLine($"Count of connected Trezors: {_TrezorManagerBroker.TrezorManagers.Count}");
-                        //    await Task.Delay(5000).ConfigureAwait(false);
-                        //}
                     }
                     return null;
                 }
@@ -258,17 +266,5 @@ namespace TrezorKeyProviderPlugin
         }
 
         #endregion
-    }
-
-    public class TrezorStateEvent
-    {
-        public TrezorStateEvent(TrezorDevice.TrezorState state, string message = null)
-        {
-            State = state;
-            Message = message;
-        }
-        public TrezorDevice.TrezorState State { get; }
-
-        public string Message { get; }
     }
 }

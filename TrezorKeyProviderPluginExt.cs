@@ -9,10 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TrezorKeyProviderPlugin
 {
+    /// <summary>
+    /// Trezor Key Provider plugin class.
+    /// </summary>
     public sealed class TrezorKeyProviderPluginExt : Plugin
     {
         private static IPluginHost m_host = null;
@@ -55,16 +59,22 @@ namespace TrezorKeyProviderPlugin
 
         public override bool Initialize(IPluginHost host)
         {
+            Debug.Assert(m_host == null);
             if (m_host != null)
             {
-                Debug.Assert(false);
                 Terminate();
             }
+
             if (host == null)
                 return false;
 
             m_host = host;
             m_prov = new TrezorKeyProvider();
+
+            // Event handler to store Trezor key ID in database before saving.
+            m_host.MainWindow.FileSavingPre += MainWindow_FileSavingPre;
+
+            // Add Trezor Key Provider to the Provider Pool
             m_host.KeyProviderPool.Add(m_prov);
 
             return true;
@@ -75,8 +85,30 @@ namespace TrezorKeyProviderPlugin
             if (m_host != null)
             {
                 m_host.KeyProviderPool.Remove(m_prov);
+                m_host.MainWindow.FileSavingPre -= MainWindow_FileSavingPre;
                 m_prov = null;
                 m_host = null;
+            }
+        }
+
+        private void MainWindow_FileSavingPre(object sender, FileSavingEventArgs e)
+        {
+            bool trezorKeyProvider = e.Database.MasterKey.UserKeys.Any(k => (k as KcpCustomKey)?.Name == TrezorKeyProvider.ProviderName);
+            if (trezorKeyProvider)
+            {
+                // Add key ID to Public custom data (unencrypted) of the database.
+                var keyId = TrezorKeysCache.Instance.Get(e.Database.IOConnectionInfo);
+                if (keyId != null)
+                {
+                    // update trezor keyID if cached a new value for the connection
+                    e.Database.PublicCustomData.SetByteArray(TrezorKeysCache.TrezorPropertyKey, keyId);
+                }
+            }
+            else
+            {
+                // Remove key ID from Public custom data (unencrypted) of the database
+                // if Trezor Key Provider is not used anymore.
+                e.Database.PublicCustomData.Remove(TrezorKeysCache.TrezorPropertyKey);
             }
         }
 

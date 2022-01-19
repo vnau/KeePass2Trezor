@@ -162,6 +162,8 @@
     <Compile Include="TrezorKeyProviderPluginExt.cs" />
     <Compile Include="TrezorNetManager\TrezorManagerBrokerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TrezorKeysCache.cs" />
+    <Compile Include="TrezorStateEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\TrezorConnectForm.resx">

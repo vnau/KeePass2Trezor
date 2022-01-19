@@ -1,7 +1,11 @@
 ﻿using KeePass.UI;
+using KeePassLib;
+using KeePassLib.Interfaces;
 using KeePassLib.Keys;
+using KeePassLib.Serialization;
 using KeePassLib.Utility;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrezorKeyProviderPlugin.Forms;
@@ -10,13 +14,14 @@ namespace TrezorKeyProviderPlugin
 {
     public sealed class TrezorKeyProvider : KeyProvider
     {
-        private Func<Form, DialogResult> ShowDialogAndDestroyHandler;
+        private readonly Func<Form, DialogResult> _showDialogAndDestroyHandler;
+        private Form _dlg = null;
 
         private DialogResult ShowTrezorInfoDialog(string title, string description, string message)
         {
             using (var dlg = new TrezorConnectForm(title, description, message))
             {
-                return ShowDialogAndDestroyHandler(dlg);
+                return _showDialogAndDestroyHandler(dlg);
             }
         }
         private DialogResult ShowDialogAndDestroy(Form form)
@@ -40,31 +45,57 @@ namespace TrezorKeyProviderPlugin
 
         public TrezorKeyProvider()
         {
-            ShowDialogAndDestroyHandler = ShowDialogAndDestroy;
+            _showDialogAndDestroyHandler = ShowDialogAndDestroy;
         }
 
         public TrezorKeyProvider(Func<Form, DialogResult> ShowDialogAndDestroy)
         {
-            ShowDialogAndDestroyHandler = ShowDialogAndDestroy;
+            _showDialogAndDestroyHandler = ShowDialogAndDestroy;
         }
 
-        public override string Name
-        {
-            get { return "Trezor Key Provider"; }
-        }
+        public static string ProviderName => "Trezor Key Provider";
 
-        public override bool SecureDesktopCompatible
+        public override string Name => ProviderName;
+        public override bool SecureDesktopCompatible => true;
+
+        /// <summary>
+        /// Read Trezor key Id from source.
+        /// </summary>
+        /// <param name="ioSource">Source connection.</param>
+        /// <returns>Trezor key Id</returns>
+        private byte[] ReadTrezorKeyId(IOConnectionInfo ioSource)
         {
-            get { return true; }
+            var db = new PwDatabase()
+            {
+                MasterKey = new CompositeKey(),
+                RootGroup = new PwGroup()
+            };
+            KdbxFile kdbx = new KdbxFile(db);
+            try
+            {
+                using (Stream s = IOConnection.OpenRead(ioSource))
+                {
+                    kdbx.Load(s, KdbxFormat.Default, new NullStatusLogger());
+                }
+            }
+            catch (InvalidCompositeKeyException)
+            {
+                // HACK:
+                // KeePass API have no proper method to read database headers
+                // without attempt to decrypt it so all we have to do is try to
+                // decrypt database with dummy master key and ignore thrown exception.
+            }
+
+            // TODO: error handling
+
+            return db.PublicCustomData.GetByteArray(TrezorKeysCache.TrezorPropertyKey);
         }
 
         public override byte[] GetKey(KeyProviderQueryContext ctx)
         {
             try
             {
-                byte[] pb = ctx.CreatingNewKey
-                    ? Create(ctx)
-                    : Create(ctx);
+                byte[] pb = Create(ctx, ctx.CreatingNewKey);
                 if (pb == null)
                     return null;
 
@@ -81,14 +112,27 @@ namespace TrezorKeyProviderPlugin
             return null;
         }
 
-        private Form _dlg = null;
-
-        private byte[] Create(KeyProviderQueryContext ctx)
+        private byte[] Create(KeyProviderQueryContext ctx, bool newKey)
         {
+            byte[] keyId = null;
+            if (newKey)
+            {
+                keyId = KeePassLib.Cryptography.CryptoRandom.Instance.GetRandomBytes(6);
+                TrezorKeysCache.Instance.Add(ctx.DatabaseIOInfo, keyId);
+            }
+            else
+            {
+                keyId = ReadTrezorKeyId(ctx.DatabaseIOInfo);
+                if (keyId == null)
+                {
+                    keyId = TrezorKeysCache.Instance.Get(ctx.DatabaseIOInfo);
+                }
+            }
+
             Task<byte[]> task;
             try
             {
-                using (var device = new TrezorDevice())
+                using (var device = new TrezorDevice(keyId))
                 {
                     device.OnChangeState += (Object sender, TrezorStateEvent stateEvent) =>
                     {
@@ -99,7 +143,6 @@ namespace TrezorKeyProviderPlugin
                         }
                     };
 
-                    //dlg.InitEx(trezorInfo, ctx);
                     byte[] secret;
                     var startTime = DateTime.Now;
 
@@ -162,7 +205,7 @@ namespace TrezorKeyProviderPlugin
                             {
                                 using (var dlg = new TrezorPinPromptForm())
                                 {
-                                    if (ShowDialogAndDestroyHandler(dlg) == DialogResult.OK)
+                                    if (_showDialogAndDestroyHandler(dlg) == DialogResult.OK)
                                     {
                                         device.SetPin(dlg.Pin);
                                     }
