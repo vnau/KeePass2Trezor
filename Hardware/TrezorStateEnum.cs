@@ -1,8 +1,6 @@
 ﻿namespace TrezorKeyProviderPlugin.Hardware
 {
-    public partial class TrezorDevice
-    {
-        public enum TrezorState
+    public enum TrezorState
         {
             Disconnected,
             Connected,
@@ -13,5 +11,4 @@
             Error,
             Processing,
         }
-    }
 }

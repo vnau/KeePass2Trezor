@@ -9,7 +9,7 @@ namespace TrezorKeyProviderPlugin
     class TrezorKeysCache
     {
         public static readonly string TrezorPropertyKey = "trezor";
-        private Dictionary<string, byte[]> cache = new Dictionary<string, byte[]>();
+        private readonly Dictionary<string, byte[]> cache = new Dictionary<string, byte[]>();
         private TrezorKeysCache() { }
 
         private static readonly TrezorKeysCache instance = new TrezorKeysCache();

@@ -54,12 +54,12 @@ namespace TrezorKeyProviderPlugin.Forms
             TrezorKeyProviderPluginExt.ShowHelp(m_kpContext);
         }
 
-        private void m_btnKey_Click(object sender, EventArgs e)
+        private void BtnKey_Click(object sender, EventArgs e)
         {
             pinTextBox.Text += (sender as Button).Tag.ToString();
         }
 
-        private void m_btnBackspace_Click(object sender, EventArgs e)
+        private void BtnBackspace_Click(object sender, EventArgs e)
         {
             if (pinTextBox.Text.Length > 0)
             {

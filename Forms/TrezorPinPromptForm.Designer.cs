@@ -119,7 +119,7 @@
             this.m_btnKey1.Tag = "1";
             this.m_btnKey1.Text = "●";
             this.m_btnKey1.UseVisualStyleBackColor = true;
-            this.m_btnKey1.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey1.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // m_btnKey2
             // 
@@ -134,7 +134,7 @@
             this.m_btnKey2.Tag = "2";
             this.m_btnKey2.Text = "●";
             this.m_btnKey2.UseVisualStyleBackColor = true;
-            this.m_btnKey2.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey2.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // m_btnKey3
             // 
@@ -149,7 +149,7 @@
             this.m_btnKey3.Tag = "3";
             this.m_btnKey3.Text = "●";
             this.m_btnKey3.UseVisualStyleBackColor = true;
-            this.m_btnKey3.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey3.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // m_btnKey7
             // 
@@ -165,7 +165,7 @@
             this.m_btnKey7.Tag = "7";
             this.m_btnKey7.Text = "●";
             this.m_btnKey7.UseVisualStyleBackColor = true;
-            this.m_btnKey7.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey7.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // m_btnKey8
             // 
@@ -180,7 +180,7 @@
             this.m_btnKey8.Tag = "8";
             this.m_btnKey8.Text = "●";
             this.m_btnKey8.UseVisualStyleBackColor = true;
-            this.m_btnKey8.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey8.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // m_btnKey9
             // 
@@ -195,7 +195,7 @@
             this.m_btnKey9.Tag = "9";
             this.m_btnKey9.Text = "●";
             this.m_btnKey9.UseVisualStyleBackColor = true;
-            this.m_btnKey9.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey9.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // m_btnKey4
             // 
@@ -210,7 +210,7 @@
             this.m_btnKey4.Tag = "4";
             this.m_btnKey4.Text = "●";
             this.m_btnKey4.UseVisualStyleBackColor = true;
-            this.m_btnKey4.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey4.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // m_btnKey5
             // 
@@ -225,7 +225,7 @@
             this.m_btnKey5.Tag = "5";
             this.m_btnKey5.Text = "●";
             this.m_btnKey5.UseVisualStyleBackColor = true;
-            this.m_btnKey5.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey5.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // m_btnKey6
             // 
@@ -240,7 +240,7 @@
             this.m_btnKey6.Tag = "6";
             this.m_btnKey6.Text = "●";
             this.m_btnKey6.UseVisualStyleBackColor = true;
-            this.m_btnKey6.Click += new System.EventHandler(this.m_btnKey_Click);
+            this.m_btnKey6.Click += new System.EventHandler(this.BtnKey_Click);
             // 
             // label1
             // 
@@ -261,7 +261,7 @@
             this.m_btnBackspace.TabStop = false;
             this.m_btnBackspace.Text = "←";
             this.m_btnBackspace.UseVisualStyleBackColor = true;
-            this.m_btnBackspace.Click += new System.EventHandler(this.m_btnBackspace_Click);
+            this.m_btnBackspace.Click += new System.EventHandler(this.BtnBackspace_Click);
             // 
             // m_btnHelp
             // 

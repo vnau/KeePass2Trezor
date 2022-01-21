@@ -7,19 +7,15 @@ namespace TrezorKeyProviderPlugin.Forms
 {
     public partial class TrezorConnectForm : Form
     {
-        string strTitle = "Connect Trezor";
-        string strDesc = "Connect your Trezor device";
-        string strMessage = "Connect your Trezor device";
-
-        public void InitEx(KeyProviderQueryContext ctx)
-        {
-        }
+        private readonly string _title = "Connect Trezor";
+        private readonly string _description = "Connect your Trezor device";
+        private readonly string _message = "Connect your Trezor device";
 
         public TrezorConnectForm(string title, string desc, string message)
         {
-            this.strTitle = title;
-            this.strDesc = desc;
-            this.strMessage = message;
+            _title = title;
+            _description = desc;
+            _message = message;
             InitializeComponent();
         }
 
@@ -29,17 +25,16 @@ namespace TrezorKeyProviderPlugin.Forms
 
             GlobalWindowManager.AddWindow(this);
 
-            this.Text = strTitle;
+            this.Text = _title;
             BannerFactory.CreateBannerEx(this, m_bannerImage,
-                global::TrezorKeyProviderPlugin.Resources.trezor48x48, strTitle, strDesc);
-            this.labelMessage.Text = strMessage;
+                global::TrezorKeyProviderPlugin.Resources.trezor48x48, _title, _description);
+            this.labelMessage.Text = _message;
             TrezorKeyProviderPluginExt.ConfigureHelpButton(m_btnHelp);
         }
 
         private void OnFormShown(object sender, EventArgs e)
         {
         }
-
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
@@ -52,7 +47,6 @@ namespace TrezorKeyProviderPlugin.Forms
 
         private void OnBtnHelp(object sender, EventArgs e)
         {
-            //TrezorKeyProviderPluginExt.ShowHelp(m_kpContext);
         }
     }
 }

@@ -12,17 +12,14 @@ using TrezorManagerBroker = TrezorKeyProviderPlugin.Trezor.Net.Manager.TrezorMan
 
 namespace TrezorKeyProviderPlugin.Hardware
 {
-    public partial class TrezorDevice : IDisposable
+    public sealed partial class TrezorDevice : IDisposable
     {
         #region Constructors
-        public TrezorDevice(byte[] keyId = null)
+        public TrezorDevice()
         {
             // Source 256-bit message to generate key in Trezor.
             // Consists of 4DEC0DED bytes repeated 8 times.
             this.salt = Enumerable.Repeat(new byte[4] { 0x4D, 0xEC, 0x0D, 0xED }, 8).SelectMany(b => b).ToArray();
-            this.keyId = keyId != null
-                ? Convert.ToBase64String(keyId)
-                : null;
         }
         #endregion Constructor
 
@@ -51,12 +48,14 @@ namespace TrezorKeyProviderPlugin.Hardware
         /// public async Task<byte[]> GetEncryptionKey(Func<int> GetPinHandler, byte[] salt)
         /// </summary>
         /// <returns></returns>
-        public async Task<byte[]> Encrypt()
+        public async Task<byte[]> GetKeyByRequest(string request)
         {
             try
             {
                 if (usbFactory == null)
+                {
                     usbFactory = TrezorManager.DeviceDefinitions.CreateWindowsUsbDeviceFactory();
+                }
                 Logger.Log("Register devices factory.", null, null, LogLevel.Information);
                 //This only needs to be done once.
                 //Register the factory for creating Usb devices. Trezor One Firmware 1.7.x / Trezor Model T
@@ -102,9 +101,10 @@ namespace TrezorKeyProviderPlugin.Hardware
                         SetState(TrezorState.Connected, string.Format("{0} Model {1} connection recognized", _trezorManager.Features.Label, _trezorManager.Features.Model));
                         Logger.Log("Trezor connection recognized", null, null, LogLevel.Information);
 
+
                         var cipherKeyValue = new CipherKeyValue()
                         {
-                            Key = "Unlock encrypted storage?",// "KeePass" + (keyId != null ? (" " + keyId) : ""),
+                            Key = request,
                             AskOnDecrypt = true,
                             AskOnEncrypt = true,
                             Encrypt = true,
@@ -113,10 +113,9 @@ namespace TrezorKeyProviderPlugin.Hardware
                         };
                         var res = await _trezorManager.SendMessageAsync<CipheredKeyValue, CipherKeyValue>(cipherKeyValue);
                         SetState(TrezorState.Confirmed, "Operation confirmed");
-                        return res.Value;
                         Logger.Log("All good", null, null, LogLevel.Information);
+                        return res.Value;
                     }
-                    return null;
                 }
             }
             catch (Exception ex)
@@ -184,6 +183,9 @@ namespace TrezorKeyProviderPlugin.Hardware
 
         public void Dispose()
         {
+            cancellation.Dispose();
+            _connectionClosed.Dispose();
+            _pinEvent.Dispose();
         }
 
         #endregion Public Methods
@@ -192,18 +194,16 @@ namespace TrezorKeyProviderPlugin.Hardware
         private TrezorManager _trezorManager;
         private static IDeviceFactory usbFactory = null;
         private static TrezorManagerBroker _TrezorManagerBroker = null;
-        private CancellationTokenSource cancellation = new CancellationTokenSource();
-        private ManualResetEvent _pinEvent = new ManualResetEvent(false);
-        private AutoResetEvent _connectionClosed = new AutoResetEvent(false);
+        private readonly CancellationTokenSource cancellation = new CancellationTokenSource();
+        private readonly ManualResetEvent _pinEvent = new ManualResetEvent(false);
+        private readonly AutoResetEvent _connectionClosed = new AutoResetEvent(false);
         private string _lastPin = null;
         private TrezorState state;
         private string stateMessage;
-        private static readonly string[] _Addresses = new string[50];
-        private static ILogger Logger = new DeviceLogger(@"r:\trezor.log");
-        private static ILogger DevLogger = new DeviceLogger(@"r:\trezor_dev.log");
-        private static ILogger UsbLogger = new DeviceLogger(@"r:\trezor_usb.log");
-        private byte[] salt;
-        private string keyId;
+        private readonly static ILogger Logger = new DeviceLogger(@"r:\trezor.log");
+        private readonly static ILogger DevLogger = new DeviceLogger(@"r:\trezor_dev.log");
+        private readonly byte[] salt;
+
         //private static readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => _ = builder.AddDebug().SetMinimumLevel(LogLevel.Trace));
         #endregion Private Fields
 
