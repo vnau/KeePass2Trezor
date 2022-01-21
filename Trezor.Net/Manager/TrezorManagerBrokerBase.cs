@@ -36,11 +36,11 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
         #endregion
 
         #region Public Properties
-        public ReadOnlyCollection<T> TrezorManagers { get; private set; } = new ReadOnlyCollection<T>(new List<T>());
-        public EnterPinArgs EnterPinArgs { get; }
-        public EnterPinArgs EnterPassphraseArgs { get; }
-        public ICoinUtility CoinUtility { get; }
-        public int? PollInterval { get; }
+        public ReadOnlyCollection<T> TrezorManagers { get; private set; }
+        public EnterPinArgs EnterPinArgs { get; private set; }
+        public EnterPinArgs EnterPassphraseArgs { get; private set; }
+        public ICoinUtility CoinUtility { get; private set; }
+        public int? PollInterval { get; private set; }
         #endregion
 
         #region Constructor
@@ -53,6 +53,7 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
             //ILoggerFactory loggerFactory = null
             )
         {
+            TrezorManagers = new ReadOnlyCollection<T>(new List<T>());
             EnterPinArgs = enterPinArgs;
             EnterPassphraseArgs = enterPassphraseArgs;
             CoinUtility = coinUtility ?? new DefaultCoinUtility();
@@ -94,11 +95,12 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 
                 if (_FirstTrezorTaskCompletionSource.Task.Status == TaskStatus.WaitingForActivation) _FirstTrezorTaskCompletionSource.SetResult(trezorManager);
 
-                TrezorInitialized?.Invoke(this, new TrezorManagerConnectionEventArgs<TMessageType>(trezorManager));
+                if (TrezorInitialized != null)
+                    TrezorInitialized.Invoke(this, new TrezorManagerConnectionEventArgs<TMessageType>(trezorManager));
             }
             finally
             {
-                _ = _Lock.Release();
+                _Lock.Release();
             }
         }
 
@@ -112,19 +114,20 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 
                 if (trezorManager == null) return;
 
-                TrezorDisconnected?.Invoke(this, new TrezorManagerConnectionEventArgs<TMessageType>(trezorManager));
+                if (TrezorDisconnected != null)
+                    TrezorDisconnected.Invoke(this, new TrezorManagerConnectionEventArgs<TMessageType>(trezorManager));
 
                 trezorManager.Dispose();
 
                 var tempList = new List<T>(TrezorManagers);
 
-                _ = tempList.Remove(trezorManager);
+                tempList.Remove(trezorManager);
 
                 TrezorManagers = new ReadOnlyCollection<T>(tempList);
             }
             finally
             {
-                _ = _Lock.Release();
+                _Lock.Release();
             }
         }
         #endregion
@@ -145,7 +148,8 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 
         public void Stop()
         {
-            _DeviceListener?.Stop();
+            if (_DeviceListener != null)
+                _DeviceListener.Stop();
 
             if (_FirstTrezorTaskCompletionSource.Task.Status == TaskStatus.WaitingForActivation)
                 _FirstTrezorTaskCompletionSource.TrySetCanceled();
@@ -169,7 +173,7 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
         /// Starts the device listener and waits for the first connected Trezor to be initialized
         /// </summary>
         /// <returns></returns>
-        public async Task<T> WaitForFirstTrezorAsync(CancellationToken cancellation = default)
+        public async Task<T> WaitForFirstTrezorAsync(CancellationToken cancellation = new CancellationToken())
         {
             if (_DeviceListener == null) Start();
             await _DeviceListener.CheckForDevicesAsync(cancellation).ConfigureAwait(false);

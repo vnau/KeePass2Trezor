@@ -12,7 +12,14 @@ namespace TrezorKeyProviderPlugin
         private Dictionary<string, byte[]> cache = new Dictionary<string, byte[]>();
         private TrezorKeysCache() { }
 
-        public static TrezorKeysCache Instance { get; } = new TrezorKeysCache();
+        private static readonly TrezorKeysCache instance = new TrezorKeysCache();
+        public static TrezorKeysCache Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
         /// <summary>
         /// Add Trezor key ID to cache for specific connection.

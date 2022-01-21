@@ -7,8 +7,8 @@
             State = state;
             Message = message;
         }
-        public TrezorDevice.TrezorState State { get; }
+        public TrezorDevice.TrezorState State { get; private set; }
 
-        public string Message { get; }
+        public string Message { get; private set; }
     }
 }

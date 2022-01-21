@@ -79,8 +79,8 @@ namespace TrezorKeyProviderPlugin
         public void Close()
         {
             cancellation.Cancel();
-            _trezorManager?.Device?.Close();
-            _TrezorManagerBroker?.Stop();
+            _trezorManager.Device.Close();
+            _TrezorManagerBroker.Stop();
         }
 
         /// <summary>
@@ -179,7 +179,9 @@ namespace TrezorKeyProviderPlugin
         public void SetPin(string pin)
         {
             Logger.Log("Setting pin...", null, null, LogLevel.Information);
-            _lastPin = pin ?? throw new ArgumentNullException(nameof(pin));
+            if (pin == null)
+                throw new ArgumentNullException("pin");
+            _lastPin = pin;
             if (State == TrezorState.WaitPin)
                 SetState(TrezorState.Processing);
             _pinEvent.Set();
@@ -191,12 +193,18 @@ namespace TrezorKeyProviderPlugin
 
         public TrezorState State
         {
-            get => state;
+            get
+            {
+                return state;
+            }
         }
 
         public string StateMessage
         {
-            get => stateMessage;
+            get
+            {
+                return stateMessage;
+            }
         }
 
         public void SetState(TrezorState state, string message = null)
@@ -239,27 +247,32 @@ namespace TrezorKeyProviderPlugin
         #region Private Methods
 
         private Task<string> GetPin()
-        => Task.Run(() =>
         {
-            Logger.Log("Waiting for the pin", null, null, LogLevel.Information);
-            _pinEvent.Reset();
-            SetState(TrezorState.WaitPin);
-            int index = WaitHandle.WaitAny(new[] { _pinEvent, cancellation.Token.WaitHandle, _connectionClosed });
-            cancellation.Token.ThrowIfCancellationRequested();
-            SetState(TrezorState.Processing);
-            _pinEvent.Reset();
-            if (index == 0)
-            {
-                Logger.Log("Pin applied", null, null, LogLevel.Information);
-                return _lastPin;
-            }
-            else
-            {
-                return null;
-            }
-        });
+            return Task.Run(() =>
+                    {
+                        Logger.Log("Waiting for the pin", null, null, LogLevel.Information);
+                        _pinEvent.Reset();
+                        SetState(TrezorState.WaitPin);
+                        int index = WaitHandle.WaitAny(new[] { _pinEvent, cancellation.Token.WaitHandle, _connectionClosed });
+                        cancellation.Token.ThrowIfCancellationRequested();
+                        SetState(TrezorState.Processing);
+                        _pinEvent.Reset();
+                        if (index == 0)
+                        {
+                            Logger.Log("Pin applied", null, null, LogLevel.Information);
+                            return _lastPin;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    });
+        }
 
-        private Task<string> GetPassphrase() => GetPin();
+        private Task<string> GetPassphrase()
+        {
+            return GetPin();
+        }
 
         #endregion Private Methods
     }

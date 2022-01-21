@@ -35,11 +35,11 @@ namespace TrezorKeyProviderPlugin
         private void CloseCurrentDialog()
         {
             if (_dlg != null)
-                _dlg?.Invoke((MethodInvoker)delegate
+                _dlg.Invoke((MethodInvoker)delegate
                 {
                     // close the form on the forms thread
                     _dlg.DialogResult = DialogResult.OK;
-                    _dlg?.Close();
+                    _dlg.Close();
                 });
         }
 
@@ -53,10 +53,29 @@ namespace TrezorKeyProviderPlugin
             _showDialogAndDestroyHandler = ShowDialogAndDestroy;
         }
 
-        public static string ProviderName => "Trezor Key Provider";
+        public static string ProviderName
+        {
+            get
+            {
+                return "Trezor Key Provider";
+            }
+        }
 
-        public override string Name => ProviderName;
-        public override bool SecureDesktopCompatible => true;
+        public override string Name
+        {
+            get
+            {
+                return ProviderName;
+            }
+        }
+
+        public override bool SecureDesktopCompatible
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// Read Trezor key Id from source.

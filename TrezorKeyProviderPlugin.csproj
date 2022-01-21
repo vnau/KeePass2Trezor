@@ -7,6 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BF016C57-8A08-4868-9998-FF50367AB153}</ProjectGuid>
     <OutputType>Library</OutputType>
+    <LangVersion>5</LangVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TrezorKeyProviderPlugin</RootNamespace>
     <AssemblyName>TrezorKeyProviderPlugin</AssemblyName>

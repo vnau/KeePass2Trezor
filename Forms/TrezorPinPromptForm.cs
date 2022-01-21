@@ -56,7 +56,7 @@ namespace TrezorKeyProviderPlugin.Forms
 
         private void m_btnKey_Click(object sender, EventArgs e)
         {
-            pinTextBox.Text += (sender as Button)?.Tag?.ToString();
+            pinTextBox.Text += (sender as Button).Tag.ToString();
         }
 
         private void m_btnBackspace_Click(object sender, EventArgs e)

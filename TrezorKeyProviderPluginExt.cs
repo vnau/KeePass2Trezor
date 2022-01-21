@@ -93,7 +93,7 @@ namespace TrezorKeyProviderPlugin
 
         private void MainWindow_FileSavingPre(object sender, FileSavingEventArgs e)
         {
-            bool trezorKeyProvider = e.Database.MasterKey.UserKeys.Any(k => (k as KcpCustomKey)?.Name == TrezorKeyProvider.ProviderName);
+            bool trezorKeyProvider = e.Database.MasterKey.UserKeys.Any(k => (k is KcpCustomKey) && (k as KcpCustomKey).Name == TrezorKeyProvider.ProviderName);
             if (trezorKeyProvider)
             {
                 // Add key ID to Public custom data (unencrypted) of the database.
