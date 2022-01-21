@@ -140,6 +140,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Hardware\TrezorStateEnum.cs" />
+    <Compile Include="Logger\DeviceLogger.cs" />
+    <Compile Include="Logger\ILogger.cs" />
+    <Compile Include="Logger\LogLevelEnum.cs" />
     <Compile Include="Trezor.Net\Manager\TrezorManagerBroker.cs" />
     <Compile Include="Forms\TrezorConnectForm.cs">
       <SubType>Form</SubType>
@@ -153,7 +157,7 @@
     <Compile Include="Forms\TrezorPinPromptForm.Designer.cs">
       <DependentUpon>TrezorPinPromptForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TrezorDevice.cs" />
+    <Compile Include="Hardware\TrezorDevice.cs" />
     <Compile Include="TrezorKeyProvider.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -164,7 +168,7 @@
     <Compile Include="Trezor.Net\Manager\TrezorManagerBrokerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrezorKeysCache.cs" />
-    <Compile Include="TrezorStateEvent.cs" />
+    <Compile Include="Hardware\TrezorStateEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\TrezorConnectForm.resx">

@@ -6,54 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
 using Trezor.Net.Contracts.Crypto;
+using TrezorKeyProviderPlugin.Logger;
 using Usb.Net.Windows;
 using TrezorManagerBroker = TrezorKeyProviderPlugin.Trezor.Net.Manager.TrezorManagerBroker;
 
-namespace TrezorKeyProviderPlugin
+namespace TrezorKeyProviderPlugin.Hardware
 {
-    public enum LogLevel
+    public partial class TrezorDevice : IDisposable
     {
-        Information,
-        Error,
-    }
-    public interface ILogger
-    {
-        void Log(string message, string region, Exception ex, LogLevel logLevel);
-    }
-
-    class DeviceLogger : ILogger
-    {
-        private readonly string filename;
-        public DeviceLogger(string filename)
-        {
-            this.filename = filename;
-        }
-
-
-        public void Log(string message, string region, Exception ex, LogLevel logLevel)
-        {
-            lock (filename)
-            {
-                //System.IO.File.AppendAllText(filename, message + "\r\n");
-            }
-        }
-
-    }
-
-    public class TrezorDevice : IDisposable
-    {
-        public enum TrezorState
-        {
-            Disconnected,
-            Connected,
-            ButtonRequest,
-            Confirmed,
-            WaitPin,
-            WaitPassfrase,
-            Error,
-            Processing,
-        }
-
         #region Constructors
         public TrezorDevice(byte[] keyId = null)
         {
@@ -79,7 +39,10 @@ namespace TrezorKeyProviderPlugin
         public void Close()
         {
             cancellation.Cancel();
-            _trezorManager.Device.Close();
+            if (_trezorManager != null)
+            {
+                _trezorManager.Device.Close();
+            }
             _TrezorManagerBroker.Stop();
         }
 

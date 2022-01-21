@@ -1,4 +1,4 @@
-﻿namespace TrezorKeyProviderPlugin
+﻿namespace TrezorKeyProviderPlugin.Hardware
 {
     public class TrezorStateEvent
     {

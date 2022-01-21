@@ -1,7 +1,6 @@
 ﻿using KeePass.Forms;
 using KeePass.Plugins;
 using KeePass.Util;
-using KeePassLib;
 using KeePassLib.Keys;
 using KeePassLib.Serialization;
 using KeePassLib.Utility;
