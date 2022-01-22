@@ -1,4 +1,6 @@
-﻿using Device.Net;
+﻿//extern alias DeviceNet;
+using Device.Net;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
 using Trezor.Net.Manager;
+//using ILoggerFactory = DeviceNet.Microsoft.Extensions.Logging.ILoggerFactory;
 
 namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 {
@@ -14,7 +17,7 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 
     public abstract class TrezorManagerBrokerBase<T, TMessageType> where T : TrezorManagerBase<TMessageType>, IDisposable
     {
-        //protected ILoggerFactory LoggerFactory { get; }
+        protected ILoggerFactory LoggerFactory { get; private set; }
 
         #region Fields
         private bool _disposed;
@@ -49,8 +52,8 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
             EnterPinArgs enterPassphraseArgs,
             int? pollInterval,
             IDeviceFactory deviceFactory,
-            ICoinUtility coinUtility = null
-            //ILoggerFactory loggerFactory = null
+            ICoinUtility coinUtility = null,
+            ILoggerFactory loggerFactory = null
             )
         {
             TrezorManagers = new ReadOnlyCollection<T>(new List<T>());
@@ -58,10 +61,9 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
             EnterPassphraseArgs = enterPassphraseArgs;
             CoinUtility = coinUtility ?? new DefaultCoinUtility();
             PollInterval = pollInterval;
-            //LoggerFactory = loggerFactory;
+            LoggerFactory = loggerFactory;
 
-
-            _DeviceListener = new DeviceListener(deviceFactory, PollInterval/*, loggerFactory*/);
+            _DeviceListener = new DeviceListener(deviceFactory, PollInterval, loggerFactory);
             _DeviceListener.DeviceDisconnected += DevicePoller_DeviceDisconnected;
             _DeviceListener.DeviceInitialized += DevicePoller_DeviceInitialized;
         }
@@ -93,7 +95,8 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 
                 await trezorManager.InitializeAsync().ConfigureAwait(false);
 
-                if (_FirstTrezorTaskCompletionSource.Task.Status == TaskStatus.WaitingForActivation) _FirstTrezorTaskCompletionSource.SetResult(trezorManager);
+                if (_FirstTrezorTaskCompletionSource.Task.Status == TaskStatus.WaitingForActivation)
+                    _FirstTrezorTaskCompletionSource.SetResult(trezorManager);
 
                 if (TrezorInitialized != null)
                     TrezorInitialized.Invoke(this, new TrezorManagerConnectionEventArgs<TMessageType>(trezorManager));

@@ -140,10 +140,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Hardware\ITrezorStateEventReceiver.cs" />
+    <Compile Include="Hardware\EventLogger.cs" />
     <Compile Include="Hardware\TrezorStateEnum.cs" />
-    <Compile Include="Logger\DeviceLogger.cs" />
-    <Compile Include="Logger\ILogger.cs" />
-    <Compile Include="Logger\LogLevelEnum.cs" />
+    <Compile Include="Logger\DummyDisposable.cs" />
+    <Compile Include="Logger\MelaLoggerAdapter.cs" />
     <Compile Include="Trezor.Net\Manager\TrezorManagerBroker.cs" />
     <Compile Include="Forms\TrezorConnectForm.cs">
       <SubType>Form</SubType>
@@ -194,6 +195,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('$(SolutionDir)\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" />
+  <Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+    <ItemGroup>
+      <ReferencePath Condition="'%(FileName)' == 'Microsoft.Extensions.Logging.Abstractions'">
+        <Aliases>MELA</Aliases>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

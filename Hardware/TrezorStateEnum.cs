@@ -1,14 +1,14 @@
 ﻿namespace TrezorKeyProviderPlugin.Hardware
 {
     public enum TrezorState
-        {
-            Disconnected,
-            Connected,
-            ButtonRequest,
-            Confirmed,
-            WaitPin,
-            WaitPassfrase,
-            Error,
-            Processing,
-        }
+    {
+        Disconnected,
+        Connected,
+        Confirmed,
+        Processing,
+        WaitPIN,
+        WaitPassphrase,
+        WaitConfirmation,
+        Error,
+    }
 }

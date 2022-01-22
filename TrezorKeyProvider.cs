@@ -6,6 +6,7 @@ using KeePassLib.Serialization;
 using KeePassLib.Utility;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrezorKeyProviderPlugin.Forms;
@@ -132,12 +133,25 @@ namespace TrezorKeyProviderPlugin
             return null;
         }
 
-        private byte[] Create(KeyProviderQueryContext ctx, bool newKey)
+        /// <summary>
+        /// Convert a key to the string representation.
+        /// </summary>
+        /// <param name="keyId"></param>
+        /// <returns></returns>
+        private static string KeyToString(byte[] keyId)
+        {
+            return Convert.ToBase64String(keyId.Skip(1).ToArray());
+        }
+
+        private byte[] Create(KeyProviderQueryContext ctx, bool creatingNewKey)
         {
             byte[] keyId = null;
-            if (newKey)
+            if (creatingNewKey)
             {
-                keyId = KeePassLib.Cryptography.CryptoRandom.Instance.GetRandomBytes(6);
+                // generate random key ID unique for each database encrypted with Trezor.
+                keyId = KeePassLib.Cryptography.CryptoRandom.Instance.GetRandomBytes(7);
+                // the first byte of the key ID is zero and is reserved for future use.
+                keyId[0] = 0;
                 TrezorKeysCache.Instance.Add(ctx.DatabaseIOInfo, keyId);
             }
             else
@@ -146,6 +160,10 @@ namespace TrezorKeyProviderPlugin
                 if (keyId == null)
                 {
                     keyId = TrezorKeysCache.Instance.Get(ctx.DatabaseIOInfo);
+                }
+                else if (keyId.Length == 0 || keyId.First() > 0)
+                {
+                    throw new Exception("Invalid Trezor master key version. You may need a newer version of the Trezor Key Provider Plugin.");
                 }
             }
 
@@ -165,7 +183,7 @@ namespace TrezorKeyProviderPlugin
 
                     byte[] secret;
                     var startTime = DateTime.Now;
-                    var request = string.Format("Unlock encrypted KeePass storage{0}?", (keyId != null ? (" " + Convert.ToBase64String(keyId)) : ""));
+                    var request = string.Format("Unlock encrypted KeePass storage{0}?", keyId != null ? " " + KeyToString(keyId) : "");
                     using (task = device.GetKeyByRequest(request))
                     {
                         while (!task.IsCompleted)
@@ -195,12 +213,12 @@ namespace TrezorKeyProviderPlugin
                                     return null;
                                 }
                             }
-                            else if (device.State == TrezorState.ButtonRequest)
+                            else if (device.State == TrezorState.WaitConfirmation)
                             {
                                 if (DialogResult.OK != ShowTrezorInfoDialog(
                                     "Confirm Trezor",
                                     "Confirm on your Trezor device",
-                                    "Confirm operation on your Trezor device"))
+                                    "Confirm unlocking the KeePass encrypted storage on your Trezor device." + (keyId != null ? "\r\n\r\nKey ID: " + KeyToString(keyId) + "" : "")))
                                 {
                                     return null;
                                 }
@@ -215,13 +233,14 @@ namespace TrezorKeyProviderPlugin
                             }
                             else if (device.State == TrezorState.Error)
                             {
-                                if (DialogResult.OK != ShowTrezorInfoDialog(
-                                    "Trezor error",
-                                    "Trezor throws error",
-                                    device.StateMessage))
-                                    return null;
+                                //if (DialogResult.OK != ShowTrezorInfoDialog(
+                                //    "Trezor error",
+                                //    "Trezor throws error",
+                                //    device.StateMessage))
+                                throw new Exception(device.StateMessage);
+                                //return null;
                             }
-                            else if (device.State == TrezorState.WaitPin || device.State == TrezorState.WaitPassfrase)
+                            else if (device.State == TrezorState.WaitPIN || device.State == TrezorState.WaitPassphrase)
                             {
                                 using (var dlg = new TrezorPinPromptForm())
                                 {
@@ -240,11 +259,12 @@ namespace TrezorKeyProviderPlugin
                         CloseCurrentDialog();
                         if (task.Status == TaskStatus.Faulted)
                         {
-                            ShowTrezorInfoDialog(
-                                    "Trezor error",
-                                    "Trezor throws error",
-                                    device.StateMessage);
-                            return null;
+                            throw new Exception(device.StateMessage);
+                            //ShowTrezorInfoDialog(
+                            //        "Trezor error",
+                            //        "Trezor throws error",
+                            //        device.StateMessage);
+                            //return null;
                         }
                         secret = task.Result;
                     }
@@ -253,7 +273,8 @@ namespace TrezorKeyProviderPlugin
             }
             catch (Exception ex)
             {
-                ShowTrezorInfoDialog("System error", "Error", ex.Message);
+                throw;
+                //ShowTrezorInfoDialog("System error", "Error", ex.Message);
                 return null;
             }
         }

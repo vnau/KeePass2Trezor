@@ -1,7 +1,11 @@
-﻿using Device.Net;
+﻿extern alias MELA;
+using Device.Net;
+using Microsoft.Extensions.Logging;
 using System;
 using Trezor.Net;
 using Trezor.Net.Contracts;
+using Microsoft.Extensions.Logging.Abstractions;
+using TrezorKeyProviderPlugin.Logger;
 
 namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 {
@@ -13,15 +17,15 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
             EnterPinArgs enterPassphraseArgs,
             int? pollInterval,
             IDeviceFactory deviceFactory,
-            ICoinUtility coinUtility = null
-            //ILoggerFactory loggerFactory = null
+            ICoinUtility coinUtility = null,
+            ILoggerFactory loggerFactory = null
             ) : base(
                 enterPinArgs,
                 enterPassphraseArgs,
                 pollInterval,
                 deviceFactory,
-                coinUtility
-                //loggerFactory
+                coinUtility,
+                loggerFactory
                 )
         {
         }
@@ -30,7 +34,8 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
         #region Protected Overrides
         protected override TrezorManager CreateTrezorManager(IDevice device)
         {
-            return new TrezorManager(EnterPinArgs, EnterPassphraseArgs, device/*, LoggerFactory.CreateLogger<TrezorManager>()*/);
+            var logger = new MelaLoggerAdapter<TrezorManager>(LoggerFactory.CreateLogger<TrezorManager>());
+            return new TrezorManager(EnterPinArgs, EnterPassphraseArgs, device, logger);
         }
         #endregion
     }
