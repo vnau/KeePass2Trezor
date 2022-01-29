@@ -10,9 +10,9 @@ using Usb.Net.Windows;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using TrezorManagerBroker = TrezorKeyProviderPlugin.Trezor.Net.Manager.TrezorManagerBroker;
 
-namespace TrezorKeyProviderPlugin.Hardware
+namespace TrezorKeyProviderPlugin.Device
 {
-    public sealed partial class TrezorDevice : IDisposable, ILoggerFactory, ITrezorStateEventReceiver
+    public sealed partial class TrezorDevice : IKeyProviderDevice, IDisposable, ILoggerFactory, IDeviceStateEventReceiver
     {
         private static IDeviceFactory deviceFactory = null;
 
@@ -96,7 +96,7 @@ namespace TrezorKeyProviderPlugin.Hardware
 
                     //using (_trezorManager)
                     {
-                        SetState(TrezorState.Connected, string.Format("{0} Model {1} connection recognized", _trezorManager.Features.Label, _trezorManager.Features.Model));
+                        SetState(KeyDeviceState.Connected, string.Format("{0} Model {1} connection recognized", _trezorManager.Features.Label, _trezorManager.Features.Model));
                         //Logger.Log("Trezor connection recognized", null, null, LogLevel.Information);
 
 
@@ -110,7 +110,7 @@ namespace TrezorKeyProviderPlugin.Hardware
                             AddressNs = AddressPathBase.Parse<BIP44AddressPath>("m/10016'/0"/*"m/1'/2'/3'"*/).ToArray()
                         };
                         var res = await _trezorManager.SendMessageAsync<CipheredKeyValue, CipherKeyValue>(cipherKeyValue);
-                        SetState(TrezorState.Confirmed, "Operation confirmed");
+                        SetState(KeyDeviceState.Confirmed, "Operation confirmed");
                         //Logger.Log("All good", null, null, LogLevel.Information);
                         return res.Value;
                     }
@@ -125,7 +125,7 @@ namespace TrezorKeyProviderPlugin.Hardware
                 //}
                 //else
                 {
-                    SetState(TrezorState.Error, ex.Message);
+                    SetState(KeyDeviceState.Error, ex.Message);
                     //Logger.Log(ex.ToString(), null, ex, LogLevel.Error);
                 }
                 throw;
@@ -142,12 +142,12 @@ namespace TrezorKeyProviderPlugin.Hardware
             if (pin == null)
                 throw new ArgumentNullException("pin");
             _lastPin = pin;
-            if (State == TrezorState.WaitPIN)
-                SetState(TrezorState.Processing);
+            if (State == KeyDeviceState.WaitPIN)
+                SetState(KeyDeviceState.Processing);
             _pinEvent.Set();
         }
 
-        public TrezorState State
+        public KeyDeviceState State
         {
             get
             {
@@ -163,17 +163,17 @@ namespace TrezorKeyProviderPlugin.Hardware
             }
         }
 
-        private void SetState(TrezorState state, string message = null)
+        private void SetState(KeyDeviceState state, string message = null)
         {
             if (this.state != state)
             {
                 this.state = state;
                 this.stateMessage = message;
-                OnChangeState(this, new TrezorStateEvent(state, message));
+                OnChangeState(this, new KeyDeviceStateEvent(state, message));
             }
         }
 
-        public event EventHandler<TrezorStateEvent> OnChangeState;
+        public event EventHandler<KeyDeviceStateEvent> OnChangeState;
 
         public void Dispose()
         {
@@ -192,7 +192,7 @@ namespace TrezorKeyProviderPlugin.Hardware
         private readonly ManualResetEvent _pinEvent = new ManualResetEvent(false);
         private readonly AutoResetEvent _connectionClosed = new AutoResetEvent(false);
         private string _lastPin = null;
-        private TrezorState state;
+        private KeyDeviceState state;
         private string stateMessage;
         //private readonly static ILogger Logger = new Logger(@"r:\trezor.log");
         //private readonly static ILogger DevLogger = new DeviceLogger(@"r:\trezor_dev.log");
@@ -209,10 +209,10 @@ namespace TrezorKeyProviderPlugin.Hardware
                     {
                         //Logger.Log("Waiting for the pin", null, null, LogLevel.Information);
                         _pinEvent.Reset();
-                        SetState(TrezorState.WaitPIN);
+                        SetState(KeyDeviceState.WaitPIN);
                         int index = WaitHandle.WaitAny(new[] { _pinEvent, _cancellationToken.Token.WaitHandle, _connectionClosed });
                         _cancellationToken.Token.ThrowIfCancellationRequested();
-                        SetState(TrezorState.Processing);
+                        SetState(KeyDeviceState.Processing);
                         _pinEvent.Reset();
                         if (index == 0)
                         {
@@ -241,7 +241,7 @@ namespace TrezorKeyProviderPlugin.Hardware
         #endregion ILoggerFactory implementation
 
         #region ITrezorStateEventReceiver implementation
-        public void TrezorEventFired(TrezorStateEvent e)
+        public void KeyDeviceEventFired(KeyDeviceStateEvent e)
         {
             SetState(e.State, e.Message);
         }

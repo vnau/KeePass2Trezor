@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrezorKeyProviderPlugin.Forms;
-using TrezorKeyProviderPlugin.Hardware;
+using TrezorKeyProviderPlugin.Device;
 
 namespace TrezorKeyProviderPlugin
 {
@@ -170,9 +170,9 @@ namespace TrezorKeyProviderPlugin
             Task<byte[]> task;
             try
             {
-                using (var device = new TrezorDevice())
+                using (IKeyProviderDevice device = new TrezorDevice())
                 {
-                    device.OnChangeState += (Object sender, TrezorStateEvent stateEvent) =>
+                    device.OnChangeState += (Object sender, KeyDeviceStateEvent stateEvent) =>
                     {
                         var state = stateEvent.State;
                         //if (state == TrezorDevice.TrezorState.Connected)
@@ -188,7 +188,7 @@ namespace TrezorKeyProviderPlugin
                     {
                         while (!task.IsCompleted)
                         {
-                            if (device.State == TrezorState.Disconnected)
+                            if (device.State == KeyDeviceState.Disconnected)
                             //&& DateTime.Now.Subtract(startTime).Seconds > 0)
                             {
                                 if (DialogResult.OK != ShowTrezorInfoDialog(
@@ -201,7 +201,7 @@ namespace TrezorKeyProviderPlugin
                                     return null;
                                 }
                             }
-                            else if (device.State == TrezorState.Connected)
+                            else if (device.State == KeyDeviceState.Connected)
                             //&& DateTime.Now.Subtract(startTime).Seconds > 0)
                             {
                                 if (DialogResult.OK != ShowTrezorInfoDialog(
@@ -213,7 +213,7 @@ namespace TrezorKeyProviderPlugin
                                     return null;
                                 }
                             }
-                            else if (device.State == TrezorState.WaitConfirmation)
+                            else if (device.State == KeyDeviceState.WaitConfirmation)
                             {
                                 if (DialogResult.OK != ShowTrezorInfoDialog(
                                     "Confirm Trezor",
@@ -223,7 +223,7 @@ namespace TrezorKeyProviderPlugin
                                     return null;
                                 }
                             }
-                            else if (device.State == TrezorState.Processing)
+                            else if (device.State == KeyDeviceState.Processing)
                             {
                                 if (DialogResult.OK != ShowTrezorInfoDialog(
                                     "Processing Trezor",
@@ -231,7 +231,7 @@ namespace TrezorKeyProviderPlugin
                                     "Please wait while Trezor working"))
                                     return null;
                             }
-                            else if (device.State == TrezorState.Error)
+                            else if (device.State == KeyDeviceState.Error)
                             {
                                 //if (DialogResult.OK != ShowTrezorInfoDialog(
                                 //    "Trezor error",
@@ -240,7 +240,7 @@ namespace TrezorKeyProviderPlugin
                                 throw new Exception(device.StateMessage);
                                 //return null;
                             }
-                            else if (device.State == TrezorState.WaitPIN || device.State == TrezorState.WaitPassphrase)
+                            else if (device.State == KeyDeviceState.WaitPIN || device.State == KeyDeviceState.WaitPassphrase)
                             {
                                 using (var dlg = new TrezorPinPromptForm())
                                 {

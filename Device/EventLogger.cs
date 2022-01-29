@@ -2,13 +2,13 @@
 using System;
 using TrezorKeyProviderPlugin.Logger;
 
-namespace TrezorKeyProviderPlugin.Hardware
+namespace TrezorKeyProviderPlugin.Device
 {
     class EventLogger : ILogger
     {
-        private ITrezorStateEventReceiver receiver;
+        private IDeviceStateEventReceiver receiver;
         private string name;
-        public EventLogger(ITrezorStateEventReceiver receiver, string name)
+        public EventLogger(IDeviceStateEventReceiver receiver, string name)
         {
             this.receiver = receiver;
             this.name = name;
@@ -34,7 +34,7 @@ namespace TrezorKeyProviderPlugin.Hardware
         public void LogInformation(string message, params object[] args)
         {
             if (message == "Write: Trezor.Net.Contracts.Common.ButtonAck")
-                receiver.TrezorEventFired(new TrezorStateEvent(TrezorState.WaitConfirmation));
+                receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.WaitConfirmation));
         }
 
         public void LogTrace<T>(T state)
