@@ -1,6 +1,6 @@
 ﻿namespace TrezorKeyProviderPlugin.Device
 {
-    interface IDeviceStateEventReceiver
+    internal interface IDeviceStateEventReceiver
     {
         void KeyDeviceEventFired(KeyDeviceStateEvent e);
     }

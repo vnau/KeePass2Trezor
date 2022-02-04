@@ -12,7 +12,7 @@ using TrezorManagerBroker = TrezorKeyProviderPlugin.Trezor.Net.Manager.TrezorMan
 
 namespace TrezorKeyProviderPlugin.Device
 {
-    public sealed partial class TrezorDevice : IKeyProviderDevice, IDisposable, ILoggerFactory, IDeviceStateEventReceiver
+    internal sealed partial class TrezorDevice : IKeyProviderDevice, IDisposable, ILoggerFactory, IDeviceStateEventReceiver
     {
         private static IDeviceFactory deviceFactory = null;
 

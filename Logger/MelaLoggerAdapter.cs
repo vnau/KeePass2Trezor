@@ -1,11 +1,11 @@
 ﻿extern alias MELA;
 using Microsoft.Extensions.Logging;
 using System;
-using MelaLogLevel = MELA.Microsoft.Extensions.Logging.LogLevel;
+using MelaLogLevel = MELA::Microsoft.Extensions.Logging.LogLevel;
 
 namespace TrezorKeyProviderPlugin.Logger
 {
-    class MelaLoggerAdapter<T> : MELA.Microsoft.Extensions.Logging.ILogger<T>
+    internal class MelaLoggerAdapter<T> : MELA::Microsoft.Extensions.Logging.ILogger<T>
     {
         private readonly ILogger<T> logger;
         public MelaLoggerAdapter(ILogger<T> logger)

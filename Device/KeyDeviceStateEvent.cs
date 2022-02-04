@@ -1,6 +1,6 @@
 ﻿namespace TrezorKeyProviderPlugin.Device
 {
-    public class KeyDeviceStateEvent
+    internal class KeyDeviceStateEvent
     {
         public KeyDeviceStateEvent(KeyDeviceState state, string message = null)
         {

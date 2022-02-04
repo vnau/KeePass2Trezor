@@ -4,7 +4,7 @@ using TrezorKeyProviderPlugin.Logger;
 
 namespace TrezorKeyProviderPlugin.Device
 {
-    class EventLogger : ILogger
+    internal class EventLogger : ILogger
     {
         private IDeviceStateEventReceiver receiver;
         private string name;

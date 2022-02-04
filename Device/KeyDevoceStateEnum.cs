@@ -1,6 +1,6 @@
 ﻿namespace TrezorKeyProviderPlugin.Device
 {
-    public enum KeyDeviceState
+    internal enum KeyDeviceState
     {
         Disconnected,
         Connected,

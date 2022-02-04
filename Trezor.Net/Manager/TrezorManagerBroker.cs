@@ -9,7 +9,7 @@ using TrezorKeyProviderPlugin.Logger;
 
 namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 {
-    public class TrezorManagerBroker : TrezorManagerBrokerBase<TrezorManager, MessageType>, IDisposable
+    internal class TrezorManagerBroker : TrezorManagerBrokerBase<TrezorManager, MessageType>, IDisposable
     {
         #region Constructor
         public TrezorManagerBroker(

@@ -15,7 +15,7 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
 {
     //TODO: Add logging (Inject the logger factory)
 
-    public abstract class TrezorManagerBrokerBase<T, TMessageType> where T : TrezorManagerBase<TMessageType>, IDisposable
+    internal abstract class TrezorManagerBrokerBase<T, TMessageType> where T : TrezorManagerBase<TMessageType>, IDisposable
     {
         protected ILoggerFactory LoggerFactory { get; private set; }
 

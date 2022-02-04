@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace TrezorKeyProviderPlugin.Device
 {
-    public interface IKeyProviderDevice : IDisposable
+    internal interface IKeyProviderDevice : IDisposable
     {
 
         KeyDeviceState State { get; }
