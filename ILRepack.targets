@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <ItemGroup>
-        <InputAssemblies Include="$(OutputPath)\TrezorKeyProviderPlugin.dll" />
-        <InputAssemblies Include="$(OutputPath)\Trezor.Net.dll" />
-        <InputAssemblies Include="$(OutputPath)\Hardwarewallets.Net.dll" />
-        <InputAssemblies Include="$(OutputPath)\Device.Net.dll" />
-        <InputAssemblies Include="$(OutputPath)\Usb.Net.dll" />
-        <InputAssemblies Include="$(OutputPath)\protobuf-net.dll" />
-        <InputAssemblies Include="$(OutputPath)\Microsoft.Extensions.Logging.Abstractions.dll" />
-    </ItemGroup>
-    <ILRepack
-        Parallel="true"
-        Union="true"
-        Internalize="false"
-        InputAssemblies="@(InputAssemblies)"
-        TargetKind="Dll"
-        OutputFile="$(OutputPath)\$(AssemblyName).dll"
-        LibraryPath="$(OutputPath)"
-    />
+		<ItemGroup>
+			<InputAssemblies Include="$(OutputPath)\TrezorKeyProviderPlugin.dll" />
+			<InputAssemblies Include="$(OutputPath)\Trezor.Net.dll" />
+			<InputAssemblies Include="$(OutputPath)\Hardwarewallets.Net.dll" />
+			<InputAssemblies Include="$(OutputPath)\Device.Net.dll" />
+			<InputAssemblies Include="$(OutputPath)\Usb.Net.dll" />
+			<InputAssemblies Include="$(OutputPath)\protobuf-net.dll" />
+			<InputAssemblies Include="$(OutputPath)\Microsoft.Extensions.Logging.Abstractions.dll" />
+		</ItemGroup>
+		<ILRepack
+			Parallel="true"
+			Internalize="true"
+			InternalizeExclude ="Trezor\.Net\.CoinInfo|Trezor\.Net\.AddressType"
+			InputAssemblies="@(InputAssemblies)"
+			TargetKind="Dll"
+			OutputFile="$(OutputPath)\$(AssemblyName).dll"
+			LibraryPath="$(OutputPath)"
+		/>
     </Target>
 </Project>

@@ -186,7 +186,6 @@ namespace TrezorKeyProviderPlugin.Device
 
         #region Private Fields
         private TrezorManager _trezorManager;
-        private static IDeviceFactory usbFactory = null;
         private static TrezorManagerBroker _TrezorManagerBroker = null;
         private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
         private readonly ManualResetEvent _pinEvent = new ManualResetEvent(false);

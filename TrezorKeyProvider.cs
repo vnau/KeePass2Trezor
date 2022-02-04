@@ -271,11 +271,10 @@ namespace TrezorKeyProviderPlugin
                     return secret;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
                 //ShowTrezorInfoDialog("System error", "Error", ex.Message);
-                return null;
             }
         }
     }
