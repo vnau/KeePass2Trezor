@@ -34,13 +34,13 @@ namespace TrezorKeyProviderPlugin
             return result;
         }
 
-        private void CloseCurrentDialog()
+        private void CloseCurrentDialog(DialogResult result = DialogResult.Retry)
         {
             if (_dlg != null)
                 _dlg.Invoke((MethodInvoker)delegate
                 {
                     // close the form on the forms thread
-                    _dlg.DialogResult = DialogResult.OK;
+                    _dlg.DialogResult = result;
                     _dlg.Close();
                 });
         }
@@ -148,9 +148,9 @@ namespace TrezorKeyProviderPlugin
             byte[] keyId = null;
             if (creatingNewKey)
             {
-                // generate random key ID unique for each database encrypted with Trezor.
+                // Generate a random key ID unique for each database encrypted with Trezor.
                 keyId = KeePassLib.Cryptography.CryptoRandom.Instance.GetRandomBytes(7);
-                // the first byte of the key ID is zero and is reserved for future use.
+                // The first byte of the key ID is zero and is reserved for future use.
                 keyId[0] = 0;
                 TrezorKeysCache.Instance.Add(ctx.DatabaseIOInfo, keyId);
             }
@@ -167,10 +167,12 @@ namespace TrezorKeyProviderPlugin
                 }
             }
 
-            Task<byte[]> task;
+            IKeyProviderDevice device = null;
+            Task<byte[]> task = null;
+
             try
             {
-                using (IKeyProviderDevice device = new TrezorDevice())
+                device = new TrezorDevice();
                 {
                     device.OnChangeState += (Object sender, KeyDeviceStateEvent stateEvent) =>
                     {
@@ -184,38 +186,35 @@ namespace TrezorKeyProviderPlugin
                     byte[] secret;
                     var startTime = DateTime.Now;
                     var request = string.Format("Unlock encrypted KeePass storage{0}?", keyId != null ? " " + KeyToString(keyId) : "");
-                    using (task = device.GetKeyByRequest(request))
+                    task = device.GetKeyByRequest(request);
                     {
                         while (!task.IsCompleted)
                         {
                             if (device.State == KeyDeviceState.Disconnected)
                             //&& DateTime.Now.Subtract(startTime).Seconds > 0)
                             {
-                                if (DialogResult.OK != ShowTrezorInfoDialog(
+                                if (DialogResult.Cancel == ShowTrezorInfoDialog(
                                     "Connect Trezor",
                                     "Connect your Trezor device",
                                     "Connect your Trezor device"))
                                 {
-                                    device.Close();
-
                                     return null;
                                 }
                             }
                             else if (device.State == KeyDeviceState.Connected)
                             //&& DateTime.Now.Subtract(startTime).Seconds > 0)
                             {
-                                if (DialogResult.OK != ShowTrezorInfoDialog(
+                                if (DialogResult.Cancel == ShowTrezorInfoDialog(
                                     "Trezor Connected",
                                     "Trezor device connected",
                                     device.StateMessage))
                                 {
-                                    device.Close();
                                     return null;
                                 }
                             }
                             else if (device.State == KeyDeviceState.WaitConfirmation)
                             {
-                                if (DialogResult.OK != ShowTrezorInfoDialog(
+                                if (DialogResult.Cancel == ShowTrezorInfoDialog(
                                     "Confirm Trezor",
                                     "Confirm on your Trezor device",
                                     "Confirm unlocking the KeePass encrypted storage on your Trezor device." + (keyId != null ? "\r\n\r\nKey ID: " + KeyToString(keyId) + "" : "")))
@@ -225,56 +224,62 @@ namespace TrezorKeyProviderPlugin
                             }
                             else if (device.State == KeyDeviceState.Processing)
                             {
-                                if (DialogResult.OK != ShowTrezorInfoDialog(
+                                if (DialogResult.Cancel == ShowTrezorInfoDialog(
                                     "Processing Trezor",
                                     "Trezor is working now",
                                     "Please wait while Trezor working"))
                                     return null;
                             }
-                            else if (device.State == KeyDeviceState.Error)
-                            {
-                                //if (DialogResult.OK != ShowTrezorInfoDialog(
-                                //    "Trezor error",
-                                //    "Trezor throws error",
-                                //    device.StateMessage))
-                                throw new Exception(device.StateMessage);
-                                //return null;
-                            }
                             else if (device.State == KeyDeviceState.WaitPIN || device.State == KeyDeviceState.WaitPassphrase)
                             {
                                 using (var dlg = new TrezorPinPromptForm())
                                 {
-                                    if (_showDialogAndDestroyHandler(dlg) == DialogResult.OK)
+                                    switch (_showDialogAndDestroyHandler(dlg))
                                     {
-                                        device.SetPin(dlg.Pin);
-                                    }
-                                    else
-                                    {
-                                        return null;
+                                        case DialogResult.OK:
+                                            device.SetPin(dlg.Pin);
+                                            break;
+                                        case DialogResult.Cancel:
+                                            return null;
                                     }
                                 }
                             }
+                            else if (device.State == KeyDeviceState.Error)
+                            {
+                                throw new Exception(device.StateMessage);
+                            }
+
                             Application.DoEvents();
                         }
                         CloseCurrentDialog();
                         if (task.Status == TaskStatus.Faulted)
                         {
                             throw new Exception(device.StateMessage);
-                            //ShowTrezorInfoDialog(
-                            //        "Trezor error",
-                            //        "Trezor throws error",
-                            //        device.StateMessage);
-                            //return null;
                         }
                         secret = task.Result;
                     }
                     return secret;
                 }
             }
-            catch (Exception)
+            finally
             {
-                throw;
-                //ShowTrezorInfoDialog("System error", "Error", ex.Message);
+                if (device != null)
+                {
+                    device.Close();
+                }
+
+                // Wait for the task complete
+                if (task != null)
+                {
+                    task.Wait();
+                    task.Dispose();
+                }
+
+                // Dispose resources
+                if (device != null)
+                {
+                    device.Dispose();
+                }
             }
         }
     }

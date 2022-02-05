@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 using Trezor.Net;
 using Trezor.Net.Contracts.Crypto;
 using Usb.Net.Windows;
+#if TREZORNET4
+#else
 using ILogger = Microsoft.Extensions.Logging.ILogger;
+#endif
 using TrezorManagerBroker = TrezorKeyProviderPlugin.Trezor.Net.Manager.TrezorManagerBroker;
 
 namespace TrezorKeyProviderPlugin.Device
 {
     internal sealed partial class TrezorDevice : IKeyProviderDevice, IDisposable, ILoggerFactory, IDeviceStateEventReceiver
     {
-        private static IDeviceFactory deviceFactory = null;
-
         #region Constructors
         public TrezorDevice()
         {
@@ -33,112 +34,95 @@ namespace TrezorKeyProviderPlugin.Device
 
         public void Close()
         {
-            _cancellationToken.Cancel();
+            if (_cancellationToken != null)
+                _cancellationToken.Cancel();
+
             if (_trezorManager != null)
             {
                 _trezorManager.Device.Close();
             }
-            _TrezorManagerBroker.Stop();
+
+            if (_trezorManagerBroker != null)
+            {
+                _trezorManagerBroker.TrezorDisconnected -= _TrezorManagerBroker_TrezorDisconnected;
+                _trezorManagerBroker.Stop();
+            }
         }
 
         /// <summary>
-        /// TODO: This should be made in to a unit test but it's annoying to add the UI for a unit test as the Trezor requires human intervention for the pin
-        /// public async Task<byte[]> GetEncryptionKey(Func<int> GetPinHandler, byte[] salt)
+        /// Get a key matching specified request from a Trezor device.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An encryption key</returns>
         public async Task<byte[]> GetKeyByRequest(string request)
         {
             try
             {
-                if (deviceFactory == null)
+                if (_deviceFactory == null)
                 {
                     //This only needs to be done once.
-#if TREZOR_NET_4
+#if TREZORNET4
                     //Register the factory for creating Usb devices. Trezor One Firmware 1.7.x / Trezor Model T
-                    WindowsUsbDeviceFactory.Register(UsbLogger, new DebugTracer());
+                    WindowsUsbDeviceFactory.Register(new DebugLogger(), new DebugTracer());
 
                     //Register the factory for creating Hid devices. Trezor One Firmware 1.6.x
-                    WindowsHidDeviceFactory.Register(UsbLogger, new DebugTracer());
-#endif
-                    //Logger.Log("Register devices factory.", null, null, LogLevel.Information);
-                    var usbFactory = TrezorManager.DeviceDefinitions.CreateWindowsUsbDeviceFactory();
-                    // var hidFactory = TrezorManager.DeviceDefinitions.CreateWindowsHidDeviceFactory();
-                    //deviceFactory = usbFactory.Aggregate(hidFactory/*, _loggerFactory*/);
-                    deviceFactory = usbFactory;
-                }
-
-
-                //Logger.Log("Waiting for Trezor... Please plug it in if it is not connected.", null, null, LogLevel.Information);
-                //if (_TrezorManagerBroker == null)
-                _TrezorManagerBroker = new TrezorManagerBroker(this.GetPin, this.GetPassphrase, 2000, deviceFactory, new DefaultCoinUtility(), this);
-                _TrezorManagerBroker.Start();
-                using (_TrezorManagerBroker)
-                {
-                    //{
-                    //    //Logger.Log("Trezor connected.", null, null, LogLevel.Information);
-                    //};
-
-                    //    (object sender, TrezorManagerConnectionEventArgs<Trezor.Net.Contracts.MessageType> e) =>
-                    //{
-                    //    if (_trezorManager == e.TrezorManager)
-                    //    {
-                    //        Logger.Log("Trezor disconnected.", null, null, LogLevel.Information);
-                    //        _connectionClosed.Set();
-                    //        SetState(TrezorState.Disconnected);
-                    //    }
-                    //};
-
-                    _trezorManager = await _TrezorManagerBroker.WaitForFirstTrezorAsync(_cancellationToken.Token).ConfigureAwait(false);
-                    await _trezorManager.InitializeAsync();
-                    //_trezorManager.Logger = this;
-
-                    //private void _TrezorManagerBroker_TrezorDisconnected(object sender, TrezorManagerConnectionEventArgs<Trezor.Net.Contracts.MessageType> e)
-
-                    //using (_trezorManager)
+                    //WindowsHidDeviceFactory.Register(UsbLogger, new DebugTracer());
+#else
+                    _deviceFactory = new IDeviceFactory[]
                     {
-                        SetState(KeyDeviceState.Connected, string.Format("{0} Model {1} connection recognized", _trezorManager.Features.Label, _trezorManager.Features.Model));
-                        //Logger.Log("Trezor connection recognized", null, null, LogLevel.Information);
-
-
-                        var cipherKeyValue = new CipherKeyValue()
-                        {
-                            Key = request,
-                            AskOnDecrypt = true,
-                            AskOnEncrypt = true,
-                            Encrypt = true,
-                            Value = salt,
-                            AddressNs = AddressPathBase.Parse<BIP44AddressPath>("m/10016'/0"/*"m/1'/2'/3'"*/).ToArray()
-                        };
-                        var res = await _trezorManager.SendMessageAsync<CipheredKeyValue, CipherKeyValue>(cipherKeyValue);
-                        SetState(KeyDeviceState.Confirmed, "Operation confirmed");
-                        //Logger.Log("All good", null, null, LogLevel.Information);
-                        return res.Value;
-                    }
+                        TrezorManager.DeviceDefinitions.CreateWindowsUsbDeviceFactory(this),
+                        //TrezorManager.DeviceDefinitions.CreateWindowsHidDeviceFactory(this)
+                    }.Aggregate();
+#endif
                 }
+
+                _trezorManagerBroker = new TrezorManagerBroker(this.GetPin, this.GetPassphrase, 2000, _deviceFactory, new DefaultCoinUtility(), this);
+                _trezorManagerBroker.TrezorDisconnected += _TrezorManagerBroker_TrezorDisconnected;
+                _trezorManagerBroker.Start();
+
+                _trezorManager = await _trezorManagerBroker.WaitForFirstTrezorAsync(_cancellationToken.Token).ConfigureAwait(false);
+                await _trezorManager.InitializeAsync();
+                SetState(KeyDeviceState.Connected, string.Format("{0} Model {1} connection recognized", _trezorManager.Features.Label, _trezorManager.Features.Model));
+
+                var cipherKeyValue = new CipherKeyValue()
+                {
+                    Key = request,
+                    AskOnDecrypt = true,
+                    AskOnEncrypt = true,
+                    Encrypt = true,
+                    Value = salt,
+                    AddressNs = AddressPathBase.Parse<BIP44AddressPath>("m/10016'/0").ToArray()
+                };
+                var res = await _trezorManager.SendMessageAsync<CipheredKeyValue, CipherKeyValue>(cipherKeyValue);
+                SetState(KeyDeviceState.Confirmed, "Operation confirmed");
+                return res.Value;
             }
             catch (Exception ex)
             {
-                //if (ex is FailureException<Trezor.Net.Contracts.Common.Failure> cmn)
-                //{
-                //    SetState(TrezorState.Error, cmn.Failure.Message);
-                //    Logger.Log(cmn.Failure.Message, null, cmn, LogLevel.Error);
-                //}
-                //else
-                {
-                    SetState(KeyDeviceState.Error, ex.Message);
-                    //Logger.Log(ex.ToString(), null, ex, LogLevel.Error);
-                }
-                throw;
+                SetState(KeyDeviceState.Error, ex.Message);
+
+                // if operation cancelled return null instead of throwing an exception
+                if ((_cancellationToken == null || _cancellationToken.IsCancellationRequested) && ex is OperationCanceledException)
+                    return null;
+                else
+                    throw;
             }
             finally
             {
-
             }
+        }
+
+        /// <summary>
+        /// Event handler called when Trezor is disconnected.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _TrezorManagerBroker_TrezorDisconnected(object sender, global::Trezor.Net.Manager.TrezorManagerConnectionEventArgs<global::Trezor.Net.Contracts.MessageType> e)
+        {
+            SetState(KeyDeviceState.Disconnected);
         }
 
         public void SetPin(string pin)
         {
-            //Logger.Log("Setting pin...", null, null, LogLevel.Information);
             if (pin == null)
                 throw new ArgumentNullException("pin");
             _lastPin = pin;
@@ -177,6 +161,7 @@ namespace TrezorKeyProviderPlugin.Device
 
         public void Dispose()
         {
+            Close();
             _cancellationToken.Dispose();
             _connectionClosed.Dispose();
             _pinEvent.Dispose();
@@ -186,18 +171,15 @@ namespace TrezorKeyProviderPlugin.Device
 
         #region Private Fields
         private TrezorManager _trezorManager;
-        private static TrezorManagerBroker _TrezorManagerBroker = null;
+        private static IDeviceFactory _deviceFactory = null;
+        private static TrezorManagerBroker _trezorManagerBroker = null;
         private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
         private readonly ManualResetEvent _pinEvent = new ManualResetEvent(false);
         private readonly AutoResetEvent _connectionClosed = new AutoResetEvent(false);
         private string _lastPin = null;
         private KeyDeviceState state;
         private string stateMessage;
-        //private readonly static ILogger Logger = new Logger(@"r:\trezor.log");
-        //private readonly static ILogger DevLogger = new DeviceLogger(@"r:\trezor_dev.log");
         private readonly byte[] salt;
-
-        //private static readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => _ = builder.AddDebug().SetMinimumLevel(LogLevel.Trace));
         #endregion Private Fields
 
         #region Private Methods
@@ -205,24 +187,15 @@ namespace TrezorKeyProviderPlugin.Device
         private Task<string> GetPin()
         {
             return Task.Run(() =>
-                    {
-                        //Logger.Log("Waiting for the pin", null, null, LogLevel.Information);
-                        _pinEvent.Reset();
-                        SetState(KeyDeviceState.WaitPIN);
-                        int index = WaitHandle.WaitAny(new[] { _pinEvent, _cancellationToken.Token.WaitHandle, _connectionClosed });
-                        _cancellationToken.Token.ThrowIfCancellationRequested();
-                        SetState(KeyDeviceState.Processing);
-                        _pinEvent.Reset();
-                        if (index == 0)
-                        {
-                            //Logger.Log("Pin applied", null, null, LogLevel.Information);
-                            return _lastPin;
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    });
+            {
+                _pinEvent.Reset();
+                SetState(KeyDeviceState.WaitPIN);
+                int index = WaitHandle.WaitAny(new[] { _pinEvent, _cancellationToken.Token.WaitHandle, _connectionClosed });
+                _cancellationToken.Token.ThrowIfCancellationRequested();
+                SetState(KeyDeviceState.Processing);
+                _pinEvent.Reset();
+                return (index == 0) ? _lastPin : null;
+            });
         }
 
         private Task<string> GetPassphrase()

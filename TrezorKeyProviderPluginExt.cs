@@ -99,13 +99,13 @@ namespace TrezorKeyProviderPlugin
                 var keyId = TrezorKeysCache.Instance.Get(e.Database.IOConnectionInfo);
                 if (keyId != null)
                 {
-                    // update trezor keyID if cached a new value for the connection
+                    // Update trezor keyID if cached a new value for the connection
                     e.Database.PublicCustomData.SetByteArray(TrezorKeysCache.TrezorPropertyKey, keyId);
                 }
             }
             else
             {
-                // Remove key ID from Public custom data (unencrypted) of the database
+                // Remove a key ID from the Public custom data (unencrypted) of the database
                 // if Trezor Key Provider is not used anymore.
                 e.Database.PublicCustomData.Remove(TrezorKeysCache.TrezorPropertyKey);
             }

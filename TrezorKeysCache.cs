@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace TrezorKeyProviderPlugin
 {
     /// <summary>
-    /// Cache containing IDs of Trezor keys for existing connections.
+    /// Cache containing IDs of Trezor keys for the existing connections.
     /// </summary>
     class TrezorKeysCache
     {

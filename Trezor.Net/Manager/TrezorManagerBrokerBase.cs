@@ -1,5 +1,4 @@
-﻿//extern alias DeviceNet;
-using Device.Net;
+﻿using Device.Net;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
 using Trezor.Net.Manager;
+using TrezorKeyProviderPlugin.Logger;
 //using ILoggerFactory = DeviceNet.Microsoft.Extensions.Logging.ILoggerFactory;
 
 namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
@@ -63,7 +63,11 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
             PollInterval = pollInterval;
             LoggerFactory = loggerFactory;
 
-            _DeviceListener = new DeviceListener(deviceFactory, PollInterval, loggerFactory);
+#if TREZORNET4
+            _DeviceListener = new DeviceListener(deviceFactory, PollInterval);
+#else
+            _DeviceListener = new DeviceListener(deviceFactory, PollInterval, loggerFactory);          
+#endif
             _DeviceListener.DeviceDisconnected += DevicePoller_DeviceDisconnected;
             _DeviceListener.DeviceInitialized += DevicePoller_DeviceInitialized;
         }
@@ -138,12 +142,10 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
         #region Public Methods
 
         /// <summary>
-        /// Placeholder. This currently does nothing but you should call this to initialize listening
+        /// Initialize listening.
         /// </summary>
         public void Start()
         {
-            if (_DeviceListener != null) return;
-
             _DeviceListener.Start();
 
             //TODO: Call Start on the DeviceListener when it is implemented...

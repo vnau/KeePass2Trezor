@@ -5,7 +5,6 @@ namespace TrezorKeyProviderPlugin.Device
 {
     internal interface IKeyProviderDevice : IDisposable
     {
-
         KeyDeviceState State { get; }
         string StateMessage { get; }
 

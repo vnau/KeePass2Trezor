@@ -1,9 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
+﻿
+#if TREZORNET4
+using Device.Net;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 using System;
 using TrezorKeyProviderPlugin.Logger;
 
 namespace TrezorKeyProviderPlugin.Device
 {
+    /// <summary>
+    /// The EventLogger class parses the Trezor.Net log to detect the necessary events
+    /// (waiting for the user to click a confirm button, etc.)
+    /// Trezor.Net does not provide any other method to track these events.
+    /// </summary>
     internal class EventLogger : ILogger
     {
         private IDeviceStateEventReceiver receiver;
@@ -14,6 +24,13 @@ namespace TrezorKeyProviderPlugin.Device
             this.name = name;
         }
 
+#if TREZORNET4
+        public void Log(string message, string region, Exception ex, LogLevel logLevel)
+        {
+            if (message == "Write: Trezor.Net.Contracts.Common.ButtonAck")
+                receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.WaitConfirmation));
+        }
+#else
         public IDisposable BeginScope(string messageFormat, params object[] args)
         {
             return new DummyDisposable();
@@ -31,12 +48,6 @@ namespace TrezorKeyProviderPlugin.Device
         {
         }
 
-        public void LogInformation(string message, params object[] args)
-        {
-            if (message == "Write: Trezor.Net.Contracts.Common.ButtonAck")
-                receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.WaitConfirmation));
-        }
-
         public void LogTrace<T>(T state)
         {
         }
@@ -44,5 +55,14 @@ namespace TrezorKeyProviderPlugin.Device
         public void LogWarning(string message, params object[] args)
         {
         }
+
+        public void LogInformation(string message, params object[] args)
+        {
+            if (message == "Write: Trezor.Net.Contracts.Common.ButtonAck")
+                receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.WaitConfirmation));
+            //if (message == "Closing device ... {deviceId}")
+            //    receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.Disconnected));
+        }
+#endif
     }
 }

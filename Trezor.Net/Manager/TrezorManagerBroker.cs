@@ -34,8 +34,12 @@ namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
         #region Protected Overrides
         protected override TrezorManager CreateTrezorManager(IDevice device)
         {
+#if TREZORNET4
+            return new TrezorManager(EnterPinArgs, EnterPassphraseArgs, device);
+#else
             var logger = new MelaLoggerAdapter<TrezorManager>(LoggerFactory.CreateLogger<TrezorManager>());
             return new TrezorManager(EnterPinArgs, EnterPassphraseArgs, device, logger);
+#endif
         }
         #endregion
     }
