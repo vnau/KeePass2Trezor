@@ -36,8 +36,8 @@
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <KeePassDownloadUrl>https://master.dl.sourceforge.net/project/keepass/KeePass%202.x/2.35/KeePass-2.35.zip?viasf=1</KeePassDownloadUrl>
-    <OutputPath>bin\$(Configuration)\Plugins</OutputPath>
+    <KeePassDownloadUrl>https://master.dl.sourceforge.net/project/keepass/KeePass%202.x/2.35/KeePass-2.35.zip</KeePassDownloadUrl>
+    <OutputPath>$(SolutionDir)\bin\$(Configuration)\Plugins</OutputPath>
     <!-- <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -62,7 +62,7 @@
   <ItemGroup>
     <Reference Include="KeePass, Version=2.35.0.20042, Culture=neutral, PublicKeyToken=fed2ed7716aecf5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\$(Configuration)\KeePass.exe</HintPath>
+      <HintPath>$(SolutionDir)\bin\$(Configuration)\KeePass.exe</HintPath>
     </Reference>
     <Reference Include="Device.Net, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)\packages\Device.Net.4.2.1\lib\net45\Device.Net.dll</HintPath>
@@ -147,6 +147,11 @@
     <Compile Include="Device\KeyDevoceStateEnum.cs" />
     <Compile Include="Logger\DummyDisposable.cs" />
     <Compile Include="Logger\MelaLoggerAdapter.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Trezor.Net\Manager\TrezorManagerBroker.cs" />
     <Compile Include="Forms\TrezorConnectForm.cs">
       <SubType>Form</SubType>
@@ -162,11 +167,6 @@
     </Compile>
     <Compile Include="Device\TrezorDevice.cs" />
     <Compile Include="TrezorKeyProvider.cs" />
-    <Compile Include="Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="TrezorKeyProviderPluginExt.cs" />
     <Compile Include="Trezor.Net\Manager\TrezorManagerBrokerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -181,7 +181,7 @@
     <EmbeddedResource Include="Forms\TrezorPinPromptForm.resx">
       <DependentUpon>TrezorPinPromptForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -196,15 +196,16 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('$(SolutionDir)\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" />
   <Target Name="DownloadKeePass" BeforeTargets="BeforeBuild">
-    <DownloadFile SourceUrl="$(KeePassDownloadUrl)" DestinationFolder="bin" DestinationFileName="KeePass.zip" SkipUnchangedFiles="true">
+    <DownloadFile SourceUrl="$(KeePassDownloadUrl)" DestinationFolder="$(SolutionDir)\bin" DestinationFileName="KeePass.zip" SkipUnchangedFiles="true">
       <Output TaskParameter="DownloadedFile" ItemName="Content" />
     </DownloadFile>
   </Target>
   <Target Name="UnzipKeePass" BeforeTargets="BeforeBuild" DependsOnTargets="DownloadKeePass">
-    <Unzip SourceFiles="bin\KeePass.zip" DestinationFolder="bin\$(Configuration)" Condition="!Exists('bin\$(Configuration)\KeePass.exe')" />
+    <Unzip SourceFiles="$(SolutionDir)\bin\KeePass.zip" DestinationFolder="$(SolutionDir)\bin\$(Configuration)" Condition="!Exists('$(SolutionDir)\bin\$(Configuration)\KeePass.exe')" />
   </Target>
   <Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
     <ItemGroup>

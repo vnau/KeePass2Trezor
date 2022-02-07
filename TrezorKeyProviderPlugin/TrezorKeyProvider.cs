@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrezorKeyProviderPlugin.Forms;
 using TrezorKeyProviderPlugin.Device;
+using TrezorKeyProviderPlugin.Properties;
 
 namespace TrezorKeyProviderPlugin
 {
