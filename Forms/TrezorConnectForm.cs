@@ -17,6 +17,7 @@ namespace TrezorKeyProviderPlugin.Forms
             _description = desc;
             _message = message;
             InitializeComponent();
+            this.pictureBox1.Image = Utility.LoadImageResource("icon-trezorT.png");
         }
 
         private void OnFormLoad(object sender, EventArgs e)
@@ -26,8 +27,13 @@ namespace TrezorKeyProviderPlugin.Forms
             GlobalWindowManager.AddWindow(this);
 
             this.Text = _title;
-            BannerFactory.CreateBannerEx(this, m_bannerImage,
-                global::TrezorKeyProviderPlugin.Resources.trezor48x48, _title, _description);
+            BannerFactory.CreateBannerEx(
+                this,
+                m_bannerImage,
+                Utility.LoadImageResource("trezor48x48.png"),
+                _title,
+                _description
+            );
             this.labelMessage.Text = _message;
             TrezorKeyProviderPluginExt.ConfigureHelpButton(m_btnHelp);
         }

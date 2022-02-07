@@ -1,5 +1,4 @@
-﻿
-#if TREZORNET4
+﻿#if TREZORNET4
 using Device.Net;
 #else
 using Microsoft.Extensions.Logging;

@@ -61,42 +61,20 @@ namespace TrezorKeyProviderPlugin {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Invalid Trezor master key version. You may need a newer version of the Trezor Key Provider Plugin..
         /// </summary>
-        internal static System.Drawing.Bitmap icon_trezor {
+        internal static string ExceptionInvalidTrezorMasterKeyVersion {
             get {
-                object obj = ResourceManager.GetObject("icon_trezor", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("ExceptionInvalidTrezorMasterKeyVersion", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Trezor Key Provider.
         /// </summary>
-        internal static System.Drawing.Bitmap icon_trezorT {
+        internal static string TrezorKeyProvider {
             get {
-                object obj = ResourceManager.GetObject("icon_trezorT", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap icon_unknown {
-            get {
-                object obj = ResourceManager.GetObject("icon_unknown", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap trezor48x48 {
-            get {
-                object obj = ResourceManager.GetObject("trezor48x48", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("TrezorKeyProvider", resourceCulture);
             }
         }
     }

@@ -1,6 +1,8 @@
 ﻿using KeePass.UI;
 using KeePassLib.Keys;
 using System;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace TrezorKeyProviderPlugin.Forms
@@ -29,8 +31,13 @@ namespace TrezorKeyProviderPlugin.Forms
             string strDesc = "Unlock Trezor using PIN.";
 
             this.Text = strTitle;
-            BannerFactory.CreateBannerEx(this, m_bannerImage,
-                global::TrezorKeyProviderPlugin.Resources.trezor48x48, strTitle, strDesc);
+            BannerFactory.CreateBannerEx(
+                this,
+                m_bannerImage,
+                Utility.LoadImageResource("trezor48x48.png"),
+                strTitle,
+                strDesc
+           );
 
             TrezorKeyProviderPluginExt.ConfigureHelpButton(m_btnHelp);
         }

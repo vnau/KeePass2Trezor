@@ -59,7 +59,7 @@ namespace TrezorKeyProviderPlugin
         {
             get
             {
-                return "Trezor Key Provider";
+                return Resources.TrezorKeyProvider;
             }
         }
 
@@ -163,7 +163,7 @@ namespace TrezorKeyProviderPlugin
                 }
                 else if (keyId.Length == 0 || keyId.First() > 0)
                 {
-                    throw new Exception("Invalid Trezor master key version. You may need a newer version of the Trezor Key Provider Plugin.");
+                    throw new Exception( Resources.ExceptionInvalidTrezorMasterKeyVersion);
                 }
             }
 

@@ -73,7 +73,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::TrezorKeyProviderPlugin.Resources.icon_trezorT;
+            
             this.pictureBox1.Location = new System.Drawing.Point(133, 99);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(32, 48);
