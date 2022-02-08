@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace TrezorKeyProviderPlugin.Device
+namespace KeePass2Trezor.Device
 {
     internal interface IKeyProviderDevice : IDisposable
     {

@@ -12,7 +12,7 @@ The decryption key can only be read from the Trezor by physically pressing the c
 
 ## How to use
 
-* Copy __TrezorKeyProviderPlugin.dll__ from the [latest release](https://github.com/vnau/keepass2trezor/releases) to the **Plugin** folder of the [KeePass 2.x](https://keepass.info/).
+* Copy __KeePass2Trezor.dll__ from the [latest release](https://github.com/vnau/keepass2trezor/releases) to the **Plugin** folder of the [KeePass 2.x](https://keepass.info/).
 * Create a new database selecting __Trezor Key Provider__ in the __Key file/provider__ field.
 * Follow instructions, unlock Trezor if necessary and confirm decryption of the key by clicking button on the device.
 

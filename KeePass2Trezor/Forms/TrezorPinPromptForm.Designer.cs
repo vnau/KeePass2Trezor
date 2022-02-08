@@ -1,4 +1,4 @@
-﻿namespace TrezorKeyProviderPlugin.Forms
+﻿namespace KeePass2Trezor.Forms
 {
     partial class TrezorPinPromptForm
     {

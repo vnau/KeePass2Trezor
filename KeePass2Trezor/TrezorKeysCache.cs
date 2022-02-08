@@ -1,7 +1,7 @@
 ﻿using KeePassLib.Serialization;
 using System.Collections.Generic;
 
-namespace TrezorKeyProviderPlugin
+namespace KeePass2Trezor
 {
     /// <summary>
     /// Cache containing IDs of Trezor keys for the existing connections.

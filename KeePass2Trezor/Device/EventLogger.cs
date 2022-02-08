@@ -4,9 +4,9 @@ using Device.Net;
 using Microsoft.Extensions.Logging;
 #endif
 using System;
-using TrezorKeyProviderPlugin.Logger;
+using KeePass2Trezor.Logger;
 
-namespace TrezorKeyProviderPlugin.Device
+namespace KeePass2Trezor.Device
 {
     /// <summary>
     /// The EventLogger class parses the Trezor.Net log to detect the necessary events

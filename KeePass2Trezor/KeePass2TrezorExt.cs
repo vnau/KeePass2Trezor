@@ -11,12 +11,12 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace TrezorKeyProviderPlugin
+namespace KeePass2Trezor
 {
     /// <summary>
     /// Trezor Key Provider plugin class.
     /// </summary>
-    public sealed class TrezorKeyProviderPluginExt : Plugin
+    public sealed class KeePass2TrezorExt : Plugin
     {
         private static IPluginHost m_host = null;
         private static TrezorKeyProvider m_prov = null;
@@ -113,7 +113,7 @@ namespace TrezorKeyProviderPlugin
 
         private static bool IsHelpPresent()
         {
-            return !string.IsNullOrEmpty(TrezorKeyProviderPluginExt.HelpFile);
+            return !string.IsNullOrEmpty(KeePass2TrezorExt.HelpFile);
         }
 
         internal static void ConfigureHelpButton(Button btn)
@@ -135,7 +135,7 @@ namespace TrezorKeyProviderPlugin
                 return;
             }
 
-            try { if (IsHelpPresent()) Process.Start(TrezorKeyProviderPluginExt.HelpFile); }
+            try { if (IsHelpPresent()) Process.Start(KeePass2TrezorExt.HelpFile); }
             catch (Exception ex) { MessageService.ShowWarning(ex.Message); }
         }
     }

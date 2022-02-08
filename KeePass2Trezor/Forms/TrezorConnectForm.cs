@@ -3,7 +3,7 @@ using KeePassLib.Keys;
 using System;
 using System.Windows.Forms;
 
-namespace TrezorKeyProviderPlugin.Forms
+namespace KeePass2Trezor.Forms
 {
     public partial class TrezorConnectForm : Form
     {
@@ -35,7 +35,7 @@ namespace TrezorKeyProviderPlugin.Forms
                 _description
             );
             this.labelMessage.Text = _message;
-            TrezorKeyProviderPluginExt.ConfigureHelpButton(m_btnHelp);
+            KeePass2TrezorExt.ConfigureHelpButton(m_btnHelp);
         }
 
         private void OnFormShown(object sender, EventArgs e)

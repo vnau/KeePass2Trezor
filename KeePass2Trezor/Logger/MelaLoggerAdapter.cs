@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using MelaLogLevel = MELA::Microsoft.Extensions.Logging.LogLevel;
 
-namespace TrezorKeyProviderPlugin.Logger
+namespace KeePass2Trezor.Logger
 {
     internal class MelaLoggerAdapter<T> : MELA::Microsoft.Extensions.Logging.ILogger<T>
     {

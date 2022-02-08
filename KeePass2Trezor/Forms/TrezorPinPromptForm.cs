@@ -5,7 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-namespace TrezorKeyProviderPlugin.Forms
+namespace KeePass2Trezor.Forms
 {
     public partial class TrezorPinPromptForm : Form
     {
@@ -39,7 +39,7 @@ namespace TrezorKeyProviderPlugin.Forms
                 strDesc
            );
 
-            TrezorKeyProviderPluginExt.ConfigureHelpButton(m_btnHelp);
+            KeePass2TrezorExt.ConfigureHelpButton(m_btnHelp);
         }
 
         private void OnFormShown(object sender, EventArgs e)
@@ -58,7 +58,7 @@ namespace TrezorKeyProviderPlugin.Forms
         }
         private void OnBtnHelp(object sender, EventArgs e)
         {
-            TrezorKeyProviderPluginExt.ShowHelp(m_kpContext);
+            KeePass2TrezorExt.ShowHelp(m_kpContext);
         }
 
         private void BtnKey_Click(object sender, EventArgs e)

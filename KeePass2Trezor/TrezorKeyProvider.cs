@@ -9,11 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TrezorKeyProviderPlugin.Forms;
-using TrezorKeyProviderPlugin.Device;
-using TrezorKeyProviderPlugin.Properties;
+using KeePass2Trezor.Forms;
+using KeePass2Trezor.Device;
+using KeePass2Trezor.Properties;
 
-namespace TrezorKeyProviderPlugin
+namespace KeePass2Trezor
 {
     public sealed class TrezorKeyProvider : KeyProvider
     {

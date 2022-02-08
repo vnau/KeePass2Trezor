@@ -1,7 +1,7 @@
 ﻿#if TREZORNET4
 using Device.Net;
 
-namespace TrezorKeyProviderPlugin.Logger
+namespace KeePass2Trezor.Logger
 {
     interface ILoggerFactory
     {

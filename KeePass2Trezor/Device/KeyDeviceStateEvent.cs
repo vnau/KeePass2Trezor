@@ -1,4 +1,4 @@
-﻿namespace TrezorKeyProviderPlugin.Device
+﻿namespace KeePass2Trezor.Device
 {
     internal class KeyDeviceStateEvent
     {

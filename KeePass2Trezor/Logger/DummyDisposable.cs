@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TrezorKeyProviderPlugin.Logger
+namespace KeePass2Trezor.Logger
 {
     class DummyDisposable : IDisposable
     {

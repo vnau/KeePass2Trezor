@@ -8,10 +8,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
 using Trezor.Net.Manager;
-using TrezorKeyProviderPlugin.Logger;
+using KeePass2Trezor.Logger;
 //using ILoggerFactory = DeviceNet.Microsoft.Extensions.Logging.ILoggerFactory;
 
-namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
+namespace KeePass2Trezor.Trezor.Net.Manager
 {
     //TODO: Add logging (Inject the logger factory)
 

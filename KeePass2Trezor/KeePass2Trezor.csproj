@@ -9,8 +9,8 @@
     <OutputType>Library</OutputType>
     <LangVersion>5</LangVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TrezorKeyProviderPlugin</RootNamespace>
-    <AssemblyName>TrezorKeyProviderPlugin</AssemblyName>
+    <RootNamespace>KeePass2Trezor</RootNamespace>
+    <AssemblyName>KeePass2Trezor</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -167,7 +167,7 @@
     </Compile>
     <Compile Include="Device\TrezorDevice.cs" />
     <Compile Include="TrezorKeyProvider.cs" />
-    <Compile Include="TrezorKeyProviderPluginExt.cs" />
+    <Compile Include="KeePass2TrezorExt.cs" />
     <Compile Include="Trezor.Net\Manager\TrezorManagerBrokerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrezorKeysCache.cs" />

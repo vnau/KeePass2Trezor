@@ -5,9 +5,9 @@ using System;
 using Trezor.Net;
 using Trezor.Net.Contracts;
 using Microsoft.Extensions.Logging.Abstractions;
-using TrezorKeyProviderPlugin.Logger;
+using KeePass2Trezor.Logger;
 
-namespace TrezorKeyProviderPlugin.Trezor.Net.Manager
+namespace KeePass2Trezor.Trezor.Net.Manager
 {
     internal class TrezorManagerBroker : TrezorManagerBrokerBase<TrezorManager, MessageType>, IDisposable
     {
