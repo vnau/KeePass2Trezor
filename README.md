@@ -1,4 +1,6 @@
 # 🔐 KeePass2Trezor
+[![Build status](https://ci.appveyor.com/api/projects/status/tddh86twfhcpo5kt?svg=true)](https://ci.appveyor.com/project/vnau/keepass2trezor)
+
 
 This plugin for [KeePass 2.x](https://keepass.info/) uses [Trezor's](https://trezor.io/) security design to encrypt the password database.
 The decryption key can only be read from the Trezor by physically pressing the confirmation button on the Trezor device. 
