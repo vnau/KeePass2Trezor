@@ -1,0 +1,29 @@
+image: Visual Studio 2019
+configuration: Release
+platform: Any CPU
+
+before_build:
+- nuget restore
+
+build:
+  project: KeePass2Trezor.sln
+  verbosity: minimal
+
+after_build:
+  7z a KeePass2Trezor.zip %APPVEYOR_BUILD_FOLDER%\bin\%configuration%\Plugins\KeePass2Trezor.dll %APPVEYOR_BUILD_FOLDER%\README.md %APPVEYOR_BUILD_FOLDER%\LICENSE
+
+artifacts:
+  - path: KeePass2Trezor.zip
+
+deploy:
+  tag: $(APPVEYOR_REPO_TAG_NAME)
+  release: $(APPVEYOR_REPO_TAG_NAME)
+  description: 'KeePass2Trezor release'
+  provider: GitHub
+  auth_token:
+    secure: NXG51ayuSAZNCEdXLSMQlakUV0AfvXkq7E5shA6BFzMMBgJh4tKclkejva2My0YW
+  artifact: KeePass2Trezor.zip
+  draft: false
+  prerelease: false
+  on:
+    APPVEYOR_REPO_TAG: true        # deploy on tag push only
