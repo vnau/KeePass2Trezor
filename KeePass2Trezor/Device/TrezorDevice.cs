@@ -200,7 +200,7 @@ namespace KeePass2Trezor.Device
 
         private Task<string> GetPassphrase()
         {
-            return GetPin();
+            return Task.FromResult("");
         }
 
         #endregion Private Methods
