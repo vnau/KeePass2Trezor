@@ -1,4 +1,5 @@
 # 🔐 KeePass2Trezor
+[![Version](https://img.shields.io/github/release/vnau/keepass2trezor)](https://github.com/vnau/keepass2trezor/releases/latest)
 [![Build status](https://ci.appveyor.com/api/projects/status/tddh86twfhcpo5kt?svg=true)](https://ci.appveyor.com/project/vnau/keepass2trezor)
 
 
