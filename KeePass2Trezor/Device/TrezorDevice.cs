@@ -1,5 +1,6 @@
 ﻿using Device.Net;
 using Hardwarewallets.Net.AddressManagement;
+using KeePass2Trezor.Properties;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -81,7 +82,7 @@ namespace KeePass2Trezor.Device
 
                 _trezorManager = await _trezorManagerBroker.WaitForFirstTrezorAsync(_cancellationToken.Token).ConfigureAwait(false);
                 await _trezorManager.InitializeAsync();
-                SetState(KeyDeviceState.Connected, string.Format("{0} Model {1} connection recognized", _trezorManager.Features.Label, _trezorManager.Features.Model));
+                SetState(KeyDeviceState.Connected, string.Format(Resources.TrezorConnectedMessage, _trezorManager.Features.Label, _trezorManager.Features.Model));
 
                 var cipherKeyValue = new CipherKeyValue()
                 {
@@ -93,7 +94,7 @@ namespace KeePass2Trezor.Device
                     AddressNs = AddressPathBase.Parse<BIP44AddressPath>("m/10016'/0").ToArray()
                 };
                 var res = await _trezorManager.SendMessageAsync<CipheredKeyValue, CipherKeyValue>(cipherKeyValue);
-                SetState(KeyDeviceState.Confirmed, "Operation confirmed");
+                SetState(KeyDeviceState.Confirmed, Resources.OperationConfirmedMessage);
                 return res.Value;
             }
             catch (Exception ex)

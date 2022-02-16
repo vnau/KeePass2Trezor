@@ -1,25 +1,18 @@
 ﻿using KeePass.UI;
-using KeePassLib.Keys;
 using System;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace KeePass2Trezor.Forms
 {
     public partial class TrezorPinPromptForm : Form
     {
-        private KeyProviderQueryContext m_kpContext = null;
-
-        public void InitEx(KeyProviderQueryContext ctx)
-        {
-            m_kpContext = ctx;
-        }
+        private readonly string _title;
 
         public string Pin { get; set; }
 
-        public TrezorPinPromptForm()
+        public TrezorPinPromptForm(string title)
         {
+            _title = title;
             InitializeComponent();
         }
 
@@ -30,7 +23,7 @@ namespace KeePass2Trezor.Forms
             string strTitle = "Enter PIN";
             string strDesc = "Unlock Trezor using PIN.";
 
-            this.Text = strTitle;
+            this.Text = _title;
             BannerFactory.CreateBannerEx(
                 this,
                 m_bannerImage,
@@ -58,7 +51,7 @@ namespace KeePass2Trezor.Forms
         }
         private void OnBtnHelp(object sender, EventArgs e)
         {
-            KeePass2TrezorExt.ShowHelp(m_kpContext);
+            //KeePass2TrezorExt.ShowHelp(m_kpContext);
         }
 
         private void BtnKey_Click(object sender, EventArgs e)

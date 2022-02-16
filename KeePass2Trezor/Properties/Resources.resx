@@ -117,10 +117,42 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfirmTrezorCaption" xml:space="preserve">
+    <value>Confirm on your Trezor</value>
+  </data>
+  <data name="ConfirmTrezorKeyID" xml:space="preserve">
+    <value>
+
+Key ID: {0}</value>
+  </data>
+  <data name="ConfirmTrezorMessage" xml:space="preserve">
+    <value>Confirm unlocking the KeePass encrypted storage on your Trezor device.</value>
+  </data>
+  <data name="ConnectedTrezorCaption" xml:space="preserve">
+    <value>Trezor connected</value>
+  </data>
+  <data name="ConnectTrezorCaption" xml:space="preserve">
+    <value>Connect your Trezor</value>
+  </data>
+  <data name="ConnectTrezorMessage" xml:space="preserve">
+    <value>Connect your Trezor device</value>
+  </data>
   <data name="ExceptionInvalidTrezorMasterKeyVersion" xml:space="preserve">
     <value>Invalid Trezor master key version. You may need a newer version of the Trezor Key Provider Plugin.</value>
   </data>
+  <data name="OperationConfirmedMessage" xml:space="preserve">
+    <value>Operation confirmed</value>
+  </data>
+  <data name="TrezorConnectedMessage" xml:space="preserve">
+    <value>{0} Model {1} connection recognized</value>
+  </data>
   <data name="TrezorKeyProvider" xml:space="preserve">
     <value>Trezor Key Provider</value>
+  </data>
+  <data name="TrezorWorkingCaption" xml:space="preserve">
+    <value>Trezor is working now</value>
+  </data>
+  <data name="TrezorWorkingMessage" xml:space="preserve">
+    <value>Please wait while Trezor working</value>
   </data>
 </root>

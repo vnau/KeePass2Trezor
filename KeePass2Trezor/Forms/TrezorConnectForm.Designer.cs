@@ -40,12 +40,12 @@
             // 
             // m_bannerImage
             // 
-            this.m_bannerImage.Dock = System.Windows.Forms.DockStyle.Top;
-            this.m_bannerImage.Location = new System.Drawing.Point(0, 0);
-            this.m_bannerImage.Name = "m_bannerImage";
+			this.m_bannerImage.Dock = System.Windows.Forms.DockStyle.Top;
+			this.m_bannerImage.Location = new System.Drawing.Point(0, 0);
+			this.m_bannerImage.Name = "m_bannerImage";
             this.m_bannerImage.Size = new System.Drawing.Size(289, 60);
             this.m_bannerImage.TabIndex = 2;
-            this.m_bannerImage.TabStop = false;
+			this.m_bannerImage.TabStop = false;
             // 
             // m_btnHelp
             // 

@@ -1,5 +1,4 @@
 ﻿using KeePass.UI;
-using KeePassLib.Keys;
 using System;
 using System.Windows.Forms;
 
@@ -7,13 +6,15 @@ namespace KeePass2Trezor.Forms
 {
     public partial class TrezorConnectForm : Form
     {
-        private readonly string _title = "Connect Trezor";
-        private readonly string _description = "Connect your Trezor device";
-        private readonly string _message = "Connect your Trezor device";
+        private readonly string _title;
+        private readonly string _caption;
+        private readonly string _description;
+        private readonly string _message;
 
-        public TrezorConnectForm(string title, string desc, string message)
+        public TrezorConnectForm(string title, string caption, string desc, string message)
         {
             _title = title;
+            _caption = caption;
             _description = desc;
             _message = message;
             InitializeComponent();
@@ -22,8 +23,6 @@ namespace KeePass2Trezor.Forms
 
         private void OnFormLoad(object sender, EventArgs e)
         {
-            //if (m_trezorInfo == null) { Debug.Assert(false); throw new InvalidOperationException(); }
-
             GlobalWindowManager.AddWindow(this);
 
             this.Text = _title;
@@ -31,7 +30,7 @@ namespace KeePass2Trezor.Forms
                 this,
                 m_bannerImage,
                 Utility.LoadImageResource("trezor48x48.png"),
-                _title,
+                _caption,
                 _description
             );
             this.labelMessage.Text = _message;

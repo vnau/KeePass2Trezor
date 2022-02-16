@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using KeePass2Trezor.Forms;
 using KeePass2Trezor.Device;
 using KeePass2Trezor.Properties;
+using KeePass.Resources;
 
 namespace KeePass2Trezor
 {
@@ -20,9 +21,9 @@ namespace KeePass2Trezor
         private readonly Func<Form, DialogResult> _showDialogAndDestroyHandler;
         private Form _dlg = null;
 
-        private DialogResult ShowTrezorInfoDialog(string title, string description, string message)
+        private DialogResult ShowTrezorInfoDialog(string title, string caption, string description, string message)
         {
-            using (var dlg = new TrezorConnectForm(title, description, message))
+            using (var dlg = new TrezorConnectForm(title, caption, description, message))
             {
                 return _showDialogAndDestroyHandler(dlg);
             }
@@ -164,7 +165,7 @@ namespace KeePass2Trezor
                 }
                 else if (keyId.Length == 0 || keyId.First() > 0)
                 {
-                    throw new Exception( Resources.ExceptionInvalidTrezorMasterKeyVersion);
+                    throw new Exception(Resources.ExceptionInvalidTrezorMasterKeyVersion);
                 }
             }
 
@@ -184,6 +185,10 @@ namespace KeePass2Trezor
                         }
                     };
 
+                    string databasePath = ctx.DatabasePath;
+                    string databaseName = UrlUtil.GetFileName(databasePath);
+                    string windowTitle = KPRes.OpenDatabase + ((!string.IsNullOrEmpty(databaseName)) ? " - " + databaseName : "");
+
                     byte[] secret;
                     var startTime = DateTime.Now;
                     var request = string.Format("Unlock encrypted KeePass storage{0}?", keyId != null ? " " + KeyToString(keyId) : "");
@@ -192,22 +197,22 @@ namespace KeePass2Trezor
                         while (!task.IsCompleted)
                         {
                             if (device.State == KeyDeviceState.Disconnected)
-                            //&& DateTime.Now.Subtract(startTime).Seconds > 0)
                             {
                                 if (DialogResult.Cancel == ShowTrezorInfoDialog(
-                                    "Connect Trezor",
-                                    "Connect your Trezor device",
-                                    "Connect your Trezor device"))
+                                    windowTitle,
+                                    Resources.ConnectTrezorCaption,
+                                    databasePath,
+                                    Resources.ConnectTrezorMessage))
                                 {
                                     return null;
                                 }
                             }
                             else if (device.State == KeyDeviceState.Connected)
-                            //&& DateTime.Now.Subtract(startTime).Seconds > 0)
                             {
                                 if (DialogResult.Cancel == ShowTrezorInfoDialog(
-                                    "Trezor Connected",
-                                    "Trezor device connected",
+                                    windowTitle,
+                                    Resources.ConnectedTrezorCaption,
+                                    databasePath,
                                     device.StateMessage))
                                 {
                                     return null;
@@ -216,9 +221,10 @@ namespace KeePass2Trezor
                             else if (device.State == KeyDeviceState.WaitConfirmation)
                             {
                                 if (DialogResult.Cancel == ShowTrezorInfoDialog(
-                                    "Confirm Trezor",
-                                    "Confirm on your Trezor device",
-                                    "Confirm unlocking the KeePass encrypted storage on your Trezor device." + (keyId != null ? "\r\n\r\nKey ID: " + KeyToString(keyId) + "" : "")))
+                                    windowTitle,
+                                    Resources.ConfirmTrezorCaption,
+                                    databasePath,
+                                    Resources.ConfirmTrezorMessage + (keyId != null ? string.Format(Resources.ConfirmTrezorKeyID, KeyToString(keyId)) : "")))
                                 {
                                     return null;
                                 }
@@ -226,14 +232,15 @@ namespace KeePass2Trezor
                             else if (device.State == KeyDeviceState.Processing)
                             {
                                 if (DialogResult.Cancel == ShowTrezorInfoDialog(
-                                    "Processing Trezor",
-                                    "Trezor is working now",
-                                    "Please wait while Trezor working"))
+                                    windowTitle,
+                                    Resources.TrezorWorkingCaption,
+                                    databasePath,
+                                    Resources.TrezorWorkingMessage))
                                     return null;
                             }
                             else if (device.State == KeyDeviceState.WaitPIN || device.State == KeyDeviceState.WaitPassphrase)
                             {
-                                using (var dlg = new TrezorPinPromptForm())
+                                using (var dlg = new TrezorPinPromptForm(windowTitle))
                                 {
                                     switch (_showDialogAndDestroyHandler(dlg))
                                     {
