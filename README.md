@@ -16,6 +16,8 @@ The decryption key can only be read from the Trezor by physically pressing the c
 
 ## Review
 
+![Using Trezor Hardware Wallet as key provider for KeePass 2.x](images/kp2t_screenshot1.png)
+
 * KeePass database securely encrypted with your personal TREZOR device.
 * A simple click on your Trezor button to unlock your password manager.
 * Use a 24 words recovery seed to regain access to your passwords.
