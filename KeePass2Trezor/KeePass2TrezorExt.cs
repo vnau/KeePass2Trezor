@@ -7,6 +7,7 @@ using KeePassLib.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -24,6 +25,16 @@ namespace KeePass2Trezor
         private const string HelpFileName = "TrezorKeyProvider_ReadMe.html";
 
         private delegate void IocTrezorDelegate(IOConnectionInfo ioc);
+
+        public override Image SmallIcon
+        {
+            get { return Utility.LoadImageResource("trezor16x16.png"); }
+        }
+
+        public override string UpdateUrl
+        {
+            get { return "https://github.com/vnau/KeePass2Trezor/raw/master/keepass.version"; }
+        }
 
         public static IPluginHost Host
         {

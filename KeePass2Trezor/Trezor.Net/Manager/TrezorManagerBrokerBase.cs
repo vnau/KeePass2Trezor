@@ -11,7 +11,7 @@ using Trezor.Net.Manager;
 using KeePass2Trezor.Logger;
 //using ILoggerFactory = DeviceNet.Microsoft.Extensions.Logging.ILoggerFactory;
 
-namespace KeePass2Trezor.Trezor.Net.Manager
+namespace KeePass2Trezor.Override.Trezor.Net.Manager
 {
     //TODO: Add logging (Inject the logger factory)
 

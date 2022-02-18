@@ -59,6 +59,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="KeePass, Version=2.35.0.20042, Culture=neutral, PublicKeyToken=fed2ed7716aecf5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -187,7 +190,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="icon.ico" />
     <Content Include="Images\icon-trezor.png" />
+    <EmbeddedResource Include="Images\trezor16x16.png" />
     <EmbeddedResource Include="Images\icon-trezorT.png" />
     <Content Include="Images\icon-unknown.png" />
     <EmbeddedResource Include="Images\trezor48x48.png" />

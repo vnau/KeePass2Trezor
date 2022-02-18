@@ -13,6 +13,7 @@ using KeePass2Trezor.Forms;
 using KeePass2Trezor.Device;
 using KeePass2Trezor.Properties;
 using KeePass.Resources;
+using Trezor.Net;
 
 namespace KeePass2Trezor
 {
@@ -129,7 +130,20 @@ namespace KeePass2Trezor
             }
             catch (Exception ex)
             {
-                MessageService.ShowWarning(ex.Message);
+                var message = ex.Message;
+                if (ex is AggregateException)
+                {
+                    ex = ex.InnerException;
+                    message = ex.Message;
+                }
+
+                var fex = ex as FailureException<Trezor.Net.Contracts.Common.Failure>;
+                if (fex != null)
+                {
+                    message = fex.Failure.Message;
+                }
+
+                MessageService.ShowWarning(message);
             }
 
             return null;

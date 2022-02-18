@@ -12,7 +12,7 @@ using Usb.Net.Windows;
 #else
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 #endif
-using TrezorManagerBroker = KeePass2Trezor.Trezor.Net.Manager.TrezorManagerBroker;
+using TrezorManagerBroker = KeePass2Trezor.Override.Trezor.Net.Manager.TrezorManagerBroker;
 
 namespace KeePass2Trezor.Device
 {
