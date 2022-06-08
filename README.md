@@ -6,10 +6,6 @@
 This plugin for [KeePass 2.x](https://keepass.info/) uses [Trezor's](https://trezor.io/) security design to encrypt the password database.
 The decryption key can only be read from the Trezor by physically pressing the confirmation button on the Trezor device. 
 
-> ⚠ **THE PLUGIN IS IN BETA** 
-> 
-> ⚠ Please do not use with sensitive data. Make regular backups, this plugin is still in beta and needs further testing on the _Trezor One_ and especially _Trezor model T_ wallets!
-> 
 > ⚠ Exporting the database in any format except _kdbx_ will cause loss of the Key Id and therefore decryption of these containers will not be possible. This is because these containers do not support public custom data (unencrypted) where the Key ID is stored.
 > 
 > 🌱 Any feedback and contribution is much appreciated!
