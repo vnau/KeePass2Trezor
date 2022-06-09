@@ -6,6 +6,8 @@
 This plugin for [KeePass 2.x](https://keepass.info/) uses [Trezor's](https://trezor.io/) security design to encrypt the password database.
 The decryption key can only be read from the Trezor by physically pressing the confirmation button on the Trezor device. 
 
+> ⚠ KeePass2Trezor does not allow to restore the master key without the hardware wallet. If your device is lost or broken, then to regain access to KeePass database you will have to buy a new [Trezor](https://trezor.io/) or build up a [PiTrezor](https://www.pitrezor.com) and initialize it using the saved seed phrase.
+> 
 > ⚠ Exporting the database in any format except _kdbx_ will cause loss of the Key Id and therefore decryption of these containers will not be possible. This is because these containers do not support public custom data (unencrypted) where the Key ID is stored.
 > 
 > 🌱 Any feedback and contribution is much appreciated!
