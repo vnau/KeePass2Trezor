@@ -89,28 +89,37 @@ namespace KeePass2Trezor
         /// <returns>Trezor key Id</returns>
         private byte[] ReadTrezorKeyId(IOConnectionInfo ioSource)
         {
-            var db = new PwDatabase()
+            PwDatabase db;
+            System.Reflection.MethodInfo loadHeaderMethod = typeof(PwDatabase).GetMethod("LoadHeader");
+            if (loadHeaderMethod != null)
             {
-                MasterKey = new CompositeKey(),
-                RootGroup = new PwGroup()
-            };
-            KdbxFile kdbx = new KdbxFile(db);
-            try
+                // Use the static method PwDatabase.LoadHeader(ioSource) to load header through reflection for KeePass v2.52+
+                db = loadHeaderMethod.Invoke(null, new[] { ioSource }) as PwDatabase;
+            }
+            else
             {
-                using (Stream s = IOConnection.OpenRead(ioSource))
+                // Use the tricky way for older versions of the KeePass
+                db = new PwDatabase()
                 {
-                    kdbx.Load(s, KdbxFormat.Default, new NullStatusLogger());
+                    MasterKey = new CompositeKey(),
+                    RootGroup = new PwGroup()
+                };
+                KdbxFile kdbx = new KdbxFile(db);
+                try
+                {
+                    using (Stream s = IOConnection.OpenRead(ioSource))
+                    {
+                        kdbx.Load(s, KdbxFormat.Default, new NullStatusLogger());
+                    }
+                }
+                catch (InvalidCompositeKeyException)
+                {
+                    // HACK:
+                    // The KeePass API prior to version 2.52 did not have a proper method for reading
+                    // database headers without attempt to decrypt it so all we have to do is try to
+                    // decrypt the database with a dummy master key and ignore the thrown exception.
                 }
             }
-            catch (InvalidCompositeKeyException)
-            {
-                // HACK:
-                // KeePass API have no proper method to read database headers
-                // without attempt to decrypt it so all we have to do is try to
-                // decrypt database with dummy master key and ignore thrown exception.
-            }
-
-            // TODO: error handling
 
             return db.PublicCustomData.GetByteArray(TrezorKeysCache.TrezorPropertyKey);
         }
