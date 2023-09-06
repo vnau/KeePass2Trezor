@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KeePass2Trezor</RootNamespace>
     <AssemblyName>KeePass2Trezor</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -63,6 +63,12 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Device.Net.LibUsb, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>$(SolutionDir)\packages\Device.Net.LibUsb.4.2.1\lib\net45\Device.Net.LibUsb.dll</HintPath>
+    </Reference>
+    <Reference Include="LibUsbDotNet.LibUsbDotNet, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c677239abe1e02a9, processorArchitecture=MSIL">
+      <HintPath>$(SolutionDir)\packages\LibUsbDotNet.2.2.29\lib\net45\LibUsbDotNet.LibUsbDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="KeePass, Version=2.35.0.20042, Culture=neutral, PublicKeyToken=fed2ed7716aecf5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SolutionDir)\bin\$(Configuration)\KeePass.exe</HintPath>
@@ -76,6 +82,7 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Configuration, Version=3.1.7.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)\packages\Microsoft.Extensions.Configuration.3.1.7\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
     </Reference>
@@ -147,7 +154,9 @@
     <Compile Include="Device\IKeyProviderDevice.cs" />
     <Compile Include="Device\IDeviceStateEventReceiver.cs" />
     <Compile Include="Device\EventLogger.cs" />
-    <Compile Include="Device\KeyDevoceStateEnum.cs" />
+    <Compile Include="Device\KeyDeviceStateEnum.cs" />
+    <Compile Include="Device\LibUsbDevice.cs" />
+    <Compile Include="Device\LibUsbDeviceFactory.cs" />
     <Compile Include="Logger\DummyDisposable.cs" />
     <Compile Include="Logger\MelaLoggerAdapter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

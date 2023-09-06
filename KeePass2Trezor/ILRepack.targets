@@ -9,6 +9,8 @@
 			<InputAssemblies Include="$(OutputPath)\Usb.Net.dll" />
 			<InputAssemblies Include="$(OutputPath)\protobuf-net.dll" />
 			<InputAssemblies Include="$(OutputPath)\Microsoft.Extensions.Logging.Abstractions.dll" />
+			<InputAssemblies Include="$(OutputPath)\Device.Net.LibUsb.dll" />
+			<InputAssemblies Include="$(OutputPath)\LibUsbDotNet.LibUsbDotNet.dll" />
 		</ItemGroup>
 		<ILRepack
 			Parallel="true"

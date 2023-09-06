@@ -198,99 +198,97 @@ namespace KeePass2Trezor
             try
             {
                 device = new TrezorDevice();
+                device.OnChangeState += (Object sender, KeyDeviceStateEvent stateEvent) =>
                 {
-                    device.OnChangeState += (Object sender, KeyDeviceStateEvent stateEvent) =>
+                    var state = stateEvent.State;
+                    //if (state == TrezorDevice.TrezorState.Connected)
                     {
-                        var state = stateEvent.State;
-                        //if (state == TrezorDevice.TrezorState.Connected)
-                        {
-                            CloseCurrentDialog();
-                        }
-                    };
-
-                    string databasePath = ctx.DatabasePath;
-                    string databaseName = UrlUtil.GetFileName(databasePath);
-                    string windowTitle = KPRes.OpenDatabase + ((!string.IsNullOrEmpty(databaseName)) ? " - " + databaseName : "");
-
-                    byte[] secret;
-                    var startTime = DateTime.Now;
-                    var request = string.Format("Unlock encrypted KeePass storage{0}?", keyId != null ? " " + KeyToString(keyId) : "");
-                    task = device.GetKeyByRequest(request);
-                    {
-                        while (!task.IsCompleted)
-                        {
-                            if (device.State == KeyDeviceState.Disconnected)
-                            {
-                                if (DialogResult.Cancel == ShowTrezorInfoDialog(
-                                    windowTitle,
-                                    Resources.ConnectTrezorCaption,
-                                    databasePath,
-                                    Resources.ConnectTrezorMessage))
-                                {
-                                    return null;
-                                }
-                            }
-                            else if (device.State == KeyDeviceState.Connected)
-                            {
-                                if (DialogResult.Cancel == ShowTrezorInfoDialog(
-                                    windowTitle,
-                                    Resources.ConnectedTrezorCaption,
-                                    databasePath,
-                                    device.StateMessage))
-                                {
-                                    return null;
-                                }
-                            }
-                            else if (device.State == KeyDeviceState.WaitConfirmation)
-                            {
-                                if (DialogResult.Cancel == ShowTrezorInfoDialog(
-                                    windowTitle,
-                                    Resources.ConfirmTrezorCaption,
-                                    databasePath,
-                                    Resources.ConfirmTrezorMessage + (keyId != null ? string.Format(Resources.ConfirmTrezorKeyID, KeyToString(keyId)) : "")))
-                                {
-                                    return null;
-                                }
-                            }
-                            else if (device.State == KeyDeviceState.Processing)
-                            {
-                                if (DialogResult.Cancel == ShowTrezorInfoDialog(
-                                    windowTitle,
-                                    Resources.TrezorWorkingCaption,
-                                    databasePath,
-                                    Resources.TrezorWorkingMessage))
-                                    return null;
-                            }
-                            else if (device.State == KeyDeviceState.WaitPIN || device.State == KeyDeviceState.WaitPassphrase)
-                            {
-                                using (var dlg = new TrezorPinPromptForm(windowTitle))
-                                {
-                                    switch (_showDialogAndDestroyHandler(dlg))
-                                    {
-                                        case DialogResult.OK:
-                                            device.SetPin(dlg.Pin);
-                                            break;
-                                        case DialogResult.Cancel:
-                                            return null;
-                                    }
-                                }
-                            }
-                            else if (device.State == KeyDeviceState.Error)
-                            {
-                                throw new Exception(device.StateMessage);
-                            }
-
-                            Application.DoEvents();
-                        }
                         CloseCurrentDialog();
-                        if (task.Status == TaskStatus.Faulted)
+                    }
+                };
+
+                string databasePath = ctx.DatabasePath;
+                string databaseName = UrlUtil.GetFileName(databasePath);
+                string windowTitle = KPRes.OpenDatabase + ((!string.IsNullOrEmpty(databaseName)) ? " - " + databaseName : "");
+
+                byte[] secret;
+                var startTime = DateTime.Now;
+                var request = string.Format("Unlock encrypted KeePass storage{0}?", keyId != null ? " " + KeyToString(keyId) : "");
+                task = device.GetKeyByRequest(request);
+                {
+                    while (!task.IsCompleted)
+                    {
+                        if (device.State == KeyDeviceState.Disconnected)
+                        {
+                            if (DialogResult.Cancel == ShowTrezorInfoDialog(
+                                windowTitle,
+                                Resources.ConnectTrezorCaption,
+                                databasePath,
+                                Resources.ConnectTrezorMessage))
+                            {
+                                return null;
+                            }
+                        }
+                        else if (device.State == KeyDeviceState.Connected)
+                        {
+                            if (DialogResult.Cancel == ShowTrezorInfoDialog(
+                                windowTitle,
+                                Resources.ConnectedTrezorCaption,
+                                databasePath,
+                                device.StateMessage))
+                            {
+                                return null;
+                            }
+                        }
+                        else if (device.State == KeyDeviceState.WaitConfirmation)
+                        {
+                            if (DialogResult.Cancel == ShowTrezorInfoDialog(
+                                windowTitle,
+                                Resources.ConfirmTrezorCaption,
+                                databasePath,
+                                Resources.ConfirmTrezorMessage + (keyId != null ? string.Format(Resources.ConfirmTrezorKeyID, KeyToString(keyId)) : "")))
+                            {
+                                return null;
+                            }
+                        }
+                        else if (device.State == KeyDeviceState.Processing)
+                        {
+                            if (DialogResult.Cancel == ShowTrezorInfoDialog(
+                                windowTitle,
+                                Resources.TrezorWorkingCaption,
+                                databasePath,
+                                Resources.TrezorWorkingMessage))
+                                return null;
+                        }
+                        else if (device.State == KeyDeviceState.WaitPIN || device.State == KeyDeviceState.WaitPassphrase)
+                        {
+                            using (var dlg = new TrezorPinPromptForm(windowTitle))
+                            {
+                                switch (_showDialogAndDestroyHandler(dlg))
+                                {
+                                    case DialogResult.OK:
+                                        device.SetPin(dlg.Pin);
+                                        break;
+                                    case DialogResult.Cancel:
+                                        return null;
+                                }
+                            }
+                        }
+                        else if (device.State == KeyDeviceState.Error)
                         {
                             throw new Exception(device.StateMessage);
                         }
-                        secret = task.Result;
+
+                        Application.DoEvents();
                     }
-                    return secret;
+                    CloseCurrentDialog();
+                    if (task.Status == TaskStatus.Faulted)
+                    {
+                        throw new Exception(device.StateMessage);
+                    }
+                    secret = task.Result;
                 }
+                return secret;
             }
             finally
             {

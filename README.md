@@ -27,11 +27,18 @@ The decryption key can only be read from the Trezor by physically pressing the c
 * Create a new database selecting __Trezor Key Provider__ in the __Key file/provider__ field.
 * Follow instructions, unlock Trezor if necessary and confirm decryption of the key by clicking button on the device.
 
-## Dependencies
+### Linux users
 
-* _Keepass 2.35_ or newer
-* _.NET Framework 4.6.1_ or higher
+* Make sure that libusb-1.0 is installed.
+* [Configure udev rules](https://trezor.io/learn/a/udev-rules) to communicate with Trezor devices.
+* Disconnect and reconnect the device after configuration.
+
+## Requirements
+
+* _KeePass 2.35_ or newer
+* _.NET Framework 4.6.2_ or higher
+* _libusb-1.0_ for Linux
 
 ## Technical details
 
-__Keepass2Trezor__ is a _key provider plugin_ for the KeePass 2.x password manager. It uses much the same approach to derive master key as [Trezor Password Manager](https://trezor.io/passwords/) described in the [SLIP-0016](https://github.com/satoshilabs/slips/blob/master/slip-0016.md) document.
+__KeePass2Trezor__ is a _key provider plugin_ for the KeePass 2.x password manager. It uses much the same approach to derive master key as [Trezor Password Manager](https://trezor.io/passwords/) described in the [SLIP-0016](https://github.com/satoshilabs/slips/blob/master/slip-0016.md) document.

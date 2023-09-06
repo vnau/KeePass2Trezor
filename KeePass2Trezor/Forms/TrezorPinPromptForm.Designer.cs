@@ -111,6 +111,7 @@
             this.m_btnKey1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_btnKey1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.m_btnKey1.Location = new System.Drawing.Point(3, 135);
             this.m_btnKey1.Name = "m_btnKey1";
             this.m_btnKey1.Size = new System.Drawing.Size(82, 60);
@@ -126,6 +127,7 @@
             this.m_btnKey2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_btnKey2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.m_btnKey2.Location = new System.Drawing.Point(91, 135);
             this.m_btnKey2.Name = "m_btnKey2";
             this.m_btnKey2.Size = new System.Drawing.Size(82, 60);
@@ -141,6 +143,7 @@
             this.m_btnKey3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_btnKey3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.m_btnKey3.Location = new System.Drawing.Point(179, 135);
             this.m_btnKey3.Name = "m_btnKey3";
             this.m_btnKey3.Size = new System.Drawing.Size(84, 60);
@@ -172,6 +175,7 @@
             this.m_btnKey8.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_btnKey8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.m_btnKey8.Location = new System.Drawing.Point(91, 3);
             this.m_btnKey8.Name = "m_btnKey8";
             this.m_btnKey8.Size = new System.Drawing.Size(82, 60);
@@ -187,6 +191,7 @@
             this.m_btnKey9.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_btnKey9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.m_btnKey9.Location = new System.Drawing.Point(179, 3);
             this.m_btnKey9.Name = "m_btnKey9";
             this.m_btnKey9.Size = new System.Drawing.Size(84, 60);
@@ -202,6 +207,7 @@
             this.m_btnKey4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_btnKey4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.m_btnKey4.Location = new System.Drawing.Point(3, 69);
             this.m_btnKey4.Name = "m_btnKey4";
             this.m_btnKey4.Size = new System.Drawing.Size(82, 60);
@@ -217,6 +223,7 @@
             this.m_btnKey5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_btnKey5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.m_btnKey5.Location = new System.Drawing.Point(91, 69);
             this.m_btnKey5.Name = "m_btnKey5";
             this.m_btnKey5.Size = new System.Drawing.Size(82, 60);
@@ -232,6 +239,7 @@
             this.m_btnKey6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_btnKey6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.m_btnKey6.Location = new System.Drawing.Point(179, 69);
             this.m_btnKey6.Name = "m_btnKey6";
             this.m_btnKey6.Size = new System.Drawing.Size(84, 60);
