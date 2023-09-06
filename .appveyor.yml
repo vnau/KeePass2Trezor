@@ -21,7 +21,7 @@ deploy:
   description: 'KeePass2Trezor release'
   provider: GitHub
   auth_token:
-    secure: NXG51ayuSAZNCEdXLSMQlakUV0AfvXkq7E5shA6BFzMMBgJh4tKclkejva2My0YW
+    secure: bkyb/0LqdoTxKnh5rVHgAKEd4FvmqAtWsYePy4PiWrBYEaxGAPqE1O7+y/1dkI+K
   artifact: KeePass2Trezor.zip
   draft: false
   prerelease: false
