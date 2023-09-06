@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
 using Trezor.Net.Contracts.Crypto;
-using Usb.Net.Windows;
 #if TREZORNET4
 #else
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -70,7 +69,8 @@ namespace KeePass2Trezor.Device
 #else
                     _deviceFactory = new IDeviceFactory[]
                     {
-                        TrezorManager.DeviceDefinitions.CreateWindowsUsbDeviceFactory(this),
+                        new LibUsbDeviceFactory(this),
+                        //TrezorManager.DeviceDefinitions.CreateWindowsUsbDeviceFactory(this),
                         //TrezorManager.DeviceDefinitions.CreateWindowsHidDeviceFactory(this)
                     }.Aggregate();
 #endif
