@@ -60,6 +60,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)\bin\$(Configuration)\KeePass.exe</StartProgram>
+  </PropertyGroup>
+  <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
