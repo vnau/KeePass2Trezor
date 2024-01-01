@@ -204,10 +204,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
-    <Content Include="Images\icon-trezor.png" />
+    <EmbeddedResource Include="Images\ts3.png" />
     <EmbeddedResource Include="Images\trezor16x16.png" />
-    <EmbeddedResource Include="Images\icon-trezorT.png" />
-    <Content Include="Images\icon-unknown.png" />
     <EmbeddedResource Include="Images\trezor48x48.png" />
   </ItemGroup>
   <ItemGroup>

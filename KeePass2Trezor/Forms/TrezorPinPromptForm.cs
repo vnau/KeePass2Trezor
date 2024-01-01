@@ -13,6 +13,7 @@ namespace KeePass2Trezor.Forms
         public TrezorPinPromptForm(string title)
         {
             _title = title;
+            this.Icon = KeePass.Program.MainForm.Icon;
             InitializeComponent();
         }
 

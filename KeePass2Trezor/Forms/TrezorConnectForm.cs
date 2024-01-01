@@ -17,8 +17,9 @@ namespace KeePass2Trezor.Forms
             _caption = caption;
             _description = desc;
             _message = message;
+            this.Icon = KeePass.Program.MainForm.Icon;
             InitializeComponent();
-            this.pictureBox1.Image = Utility.LoadImageResource("icon-trezorT.png");
+            this.pictureBox1.Image = DpiUtil.ScaleImage(Utility.LoadImageResource("ts3.png"), false);
         }
 
         private void OnFormLoad(object sender, EventArgs e)
@@ -34,7 +35,7 @@ namespace KeePass2Trezor.Forms
                 _description
             );
             this.labelMessage.Text = _message;
-            KeePass2TrezorExt.ConfigureHelpButton(m_btnHelp);
+            //KeePass2TrezorExt.ConfigureHelpButton(m_btnHelp);
         }
 
         private void OnFormShown(object sender, EventArgs e)
