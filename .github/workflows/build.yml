@@ -49,6 +49,7 @@ jobs:
         tag_name: ${{ github.ref }}
         release_name: ${{ github.ref }}
         body: 'KeePass2Trezor release'
+        draft: true
 
     - name: Upload Release Asset
       id: upload-release-asset
