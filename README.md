@@ -12,14 +12,14 @@
 
 The **KeePass2Trezor** plugin for [KeePass 2.x](https://keepass.info/) leverages [Trezor's](https://trezor.io/) security design to encrypt your password database. The decryption key can only be accessed by physically pressing the confirmation button on the Trezor device.
 
-It supports Trezor One, Model M and the new Safe 3 on Windows and Linux.
+It supports Trezor One, Model M and Safe 3 on Windows and Linux.
 <img align="right" width="300" height="300" alt="Using Trezor Hardware Wallet as key provider for KeePass 2.x" src="images/kp2t_animation.gif">
 
 ## Features
 
 - **Secure Encryption:** Your KeePass database is securely encrypted using your personal Trezor device.
 - **Simple Unlock:** Unlock your password manager with a single click on your Trezor button.
-- **Recovery Seed:** Use a 24-word recovery seed to regain access to your passwords.
+- **Recovery Seed:** Use a recovery seed to regain access to your passwords.
 - **Optional Master Password:** Can be used with or without a master password.
 
 ## How to Use
