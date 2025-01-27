@@ -15,6 +15,14 @@ The **KeePass2Trezor** plugin for [KeePass 2.x](https://keepass.info/) leverages
 It supports Trezor One, Model T and Safe 3 on Windows and Linux.
 <img align="right" width="300" height="300" alt="Using Trezor Hardware Wallet as key provider for KeePass 2.x" src="images/kp2t_animation.gif">
 
+> [!CAUTION]
+> There have been reports of the add-in failing with a protobuf error on firmware version 2.8.7 (22 January 2025), affecting multiple Trezor wallet models (including the Trezor Safe 5 on firmware version 2.8.0).
+>
+> To prevent this issue, it is recommended to either stay on a previous firmware version or use an alternative master key source before updating the firmware.
+> If the issue has already occurred, the only way at the current moment to regain access to KeePass database is by downgrading the firmware. **Please ensure you have your recovery seed before attempting to downgrade firmware.**
+>
+> I am working to resolve this issue as quickly as possible.
+
 ## Features
 
 - **Secure Encryption:** Your KeePass database is securely encrypted using your personal Trezor device.
