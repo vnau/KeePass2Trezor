@@ -21,7 +21,7 @@ It supports Trezor One, Model T and Safe 3 on Windows and Linux.
 > To prevent this issue, it is recommended to either stay on a previous firmware version or use an alternative master key source before updating the firmware.
 > If the issue has already occurred, the only way at the current moment to regain access to KeePass database is by downgrading the firmware. **Please ensure you have your recovery seed before attempting to downgrade firmware.**
 >
-> I am working to resolve this issue as quickly as possible.
+> A fix is in progress and is expected to be released by the end of this week.
 
 ## Features
 
