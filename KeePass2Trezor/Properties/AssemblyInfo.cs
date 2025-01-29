@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("vnau")]
 [assembly: AssemblyProduct("KeePass Plugin")]
-[assembly: AssemblyCopyright("Copyright © 2024 vnau")]
+[assembly: AssemblyCopyright("Copyright © 2025 vnau")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -18,6 +18,8 @@ using System.Runtime.InteropServices;
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+
+[assembly: InternalsVisibleTo("KeePass2Trezor.Cli")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("f821ccb1-e428-46d3-a8a2-6bb75cbaeeb3")]

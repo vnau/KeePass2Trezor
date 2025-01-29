@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
-using Trezor.Net.Manager;
 
 namespace KeePass2Trezor.Override.Trezor.Net.Manager
 {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 #endif
 using System;
 using KeePass2Trezor.Logger;
+using KeePass2Trezor.Override.Trezor.Net.Contracts.Common;
 
 namespace KeePass2Trezor.Device
 {
@@ -57,7 +58,7 @@ namespace KeePass2Trezor.Device
 
         public void LogInformation(string message, params object[] args)
         {
-            if (message == "Write: Trezor.Net.Contracts.Common.ButtonAck")
+            if (message.StartsWith("Write: ") && message.EndsWith(nameof(ButtonAck)));
                 receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.WaitConfirmation));
             //if (message == "Closing device ... {deviceId}")
             //    receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.Disconnected));

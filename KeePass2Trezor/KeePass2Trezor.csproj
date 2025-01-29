@@ -50,6 +50,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -59,6 +60,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartAction>Program</StartAction>
@@ -91,12 +93,12 @@
     <Compile Include="Device\LibUsbDevice.cs" />
     <Compile Include="Device\LibUsbDeviceFactory.cs" />
     <Compile Include="Logger\DummyDisposable.cs" />
-    <Compile Include="Logger\MelaLoggerAdapter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Trezor.Net\Contracts\messages-common.cs" />
     <Compile Include="Trezor.Net\Manager\TrezorManagerBroker.cs" />
     <Compile Include="Forms\TrezorConnectForm.cs">
       <SubType>Form</SubType>
@@ -111,6 +113,9 @@
       <DependentUpon>TrezorPinPromptForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Device\TrezorDevice.cs" />
+    <Compile Include="Trezor.Net\Manager\TrezorManagerConnectionEventArgs.cs" />
+    <Compile Include="Trezor.Net\TrezorManager.cs" />
+    <Compile Include="Trezor.Net\TrezorManagerBase.cs" />
     <Compile Include="TrezorKeyProvider.cs" />
     <Compile Include="KeePass2TrezorExt.cs" />
     <Compile Include="Trezor.Net\Manager\TrezorManagerBrokerBase.cs" />
@@ -129,6 +134,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

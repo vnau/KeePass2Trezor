@@ -3,6 +3,7 @@ using Hardwarewallets.Net.AddressManagement;
 using KeePass2Trezor.Properties;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
@@ -12,6 +13,7 @@ using Trezor.Net.Contracts.Crypto;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 #endif
 using TrezorManagerBroker = KeePass2Trezor.Override.Trezor.Net.Manager.TrezorManagerBroker;
+using TrezorManager = KeePass2Trezor.Override.Trezor.Net.TrezorManager;
 
 namespace KeePass2Trezor.Device
 {
@@ -99,13 +101,21 @@ namespace KeePass2Trezor.Device
             }
             catch (Exception ex)
             {
-                SetState(KeyDeviceState.Error, ex.Message);
+                var message = string.Join("\r\n\r\n", new string[] {
+                    ex.Message,
+                    ex.InnerException!=null? ex.InnerException.Message:null,
+                    ex.InnerException!=null? ex.InnerException.StackTrace:null
+                }.Where(v => v != null));
+
+                SetState(KeyDeviceState.Error, message);
 
                 // if operation cancelled return null instead of throwing an exception
                 if ((_cancellationToken == null || _cancellationToken.IsCancellationRequested) && ex is OperationCanceledException)
                     return null;
                 else
-                    throw;
+                {
+                    throw new Exception(message);
+                }
             }
             finally
             {
@@ -117,7 +127,7 @@ namespace KeePass2Trezor.Device
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _TrezorManagerBroker_TrezorDisconnected(object sender, global::Trezor.Net.Manager.TrezorManagerConnectionEventArgs<global::Trezor.Net.Contracts.MessageType> e)
+        private void _TrezorManagerBroker_TrezorDisconnected(object sender, KeePass2Trezor.Override.Trezor.Net.Manager.TrezorManagerConnectionEventArgs<global::Trezor.Net.Contracts.MessageType> e)
         {
             SetState(KeyDeviceState.Disconnected);
         }

@@ -39,7 +39,7 @@ namespace KeePass2Trezor
 
         private void CloseCurrentDialog(DialogResult result = DialogResult.Retry)
         {
-            if (_dlg != null)
+            if (_dlg != null && _dlg.Created)
                 _dlg.Invoke((MethodInvoker)delegate
                 {
                     // close the form on the forms thread
