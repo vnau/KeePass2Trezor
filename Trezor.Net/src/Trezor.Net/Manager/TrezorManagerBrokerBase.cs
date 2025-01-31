@@ -6,14 +6,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Trezor.Net;
-using Trezor.Net.Manager;
 
-namespace KeePass2Trezor.Override.Trezor.Net.Manager
+namespace Trezor.Net.Manager
 {
     //TODO: Add logging (Inject the logger factory)
 
-    internal abstract class TrezorManagerBrokerBase<T, TMessageType> where T : TrezorManagerBase<TMessageType>, IDisposable
+    public abstract class TrezorManagerBrokerBase<T, TMessageType> where T : TrezorManagerBase<TMessageType>, IDisposable
     {
         protected ILoggerFactory LoggerFactory { get; private set; }
 
