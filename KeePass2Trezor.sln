@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31911.196
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeePass2Trezor", "KeePass2Trezor/KeePass2Trezor.csproj", "{BF016C57-8A08-4868-9998-FF50367AB153}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeePass2Trezor", "KeePass2Trezor\KeePass2Trezor.csproj", "{BF016C57-8A08-4868-9998-FF50367AB153}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DA8D9457-C8B1-4E20-9EB1-A294151DDA60} = {DA8D9457-C8B1-4E20-9EB1-A294151DDA60}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trezor.Net", "Trezor.Net\Trezor.Net.csproj", "{DA8D9457-C8B1-4E20-9EB1-A294151DDA60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{BF016C57-8A08-4868-9998-FF50367AB153}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF016C57-8A08-4868-9998-FF50367AB153}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF016C57-8A08-4868-9998-FF50367AB153}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA8D9457-C8B1-4E20-9EB1-A294151DDA60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA8D9457-C8B1-4E20-9EB1-A294151DDA60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA8D9457-C8B1-4E20-9EB1-A294151DDA60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA8D9457-C8B1-4E20-9EB1-A294151DDA60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

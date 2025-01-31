@@ -9,8 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trezor.Net;
 using Trezor.Net.Contracts.Crypto;
-using TrezorManager = KeePass2Trezor.Override.Trezor.Net.TrezorManager;
-using TrezorManagerBroker = KeePass2Trezor.Override.Trezor.Net.Manager.TrezorManagerBroker;
+using Trezor.Net.Manager;
 #if TREZORNET4
 #else
 #endif
@@ -79,7 +78,7 @@ namespace KeePass2Trezor.Device
 #endif
                 }
 
-                _trezorManagerBroker = new TrezorManagerBroker(this.GetPin, this.GetPassphrase, 2000, _deviceFactory, new DefaultCoinUtility(), new EventLoggerFactory(this, _logger));
+                _trezorManagerBroker = new TrezorManagerBroker(this.GetPin, this.GetPassphrase, 2000, _deviceFactory, new DefaultCoinUtility(), new EventLoggerFactory(this, _logger) as ILoggerFactory);
                 _trezorManagerBroker.TrezorDisconnected += _TrezorManagerBroker_TrezorDisconnected;
                 _trezorManagerBroker.Start();
 
@@ -128,7 +127,7 @@ namespace KeePass2Trezor.Device
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _TrezorManagerBroker_TrezorDisconnected(object sender, KeePass2Trezor.Override.Trezor.Net.Manager.TrezorManagerConnectionEventArgs<global::Trezor.Net.Contracts.MessageType> e)
+        private void _TrezorManagerBroker_TrezorDisconnected(object sender, TrezorManagerConnectionEventArgs<Trezor.Net.Contracts.MessageType> e)
         {
             SetState(KeyDeviceState.Disconnected);
         }

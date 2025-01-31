@@ -99,8 +99,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Trezor.Net\Contracts\messages-common.cs" />
-    <Compile Include="Trezor.Net\Manager\TrezorManagerBroker.cs" />
     <Compile Include="Forms\TrezorConnectForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,12 +112,8 @@
       <DependentUpon>TrezorPinPromptForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Device\TrezorDevice.cs" />
-    <Compile Include="Trezor.Net\Manager\TrezorManagerConnectionEventArgs.cs" />
-    <Compile Include="Trezor.Net\TrezorManager.cs" />
-    <Compile Include="Trezor.Net\TrezorManagerBase.cs" />
     <Compile Include="TrezorKeyProvider.cs" />
     <Compile Include="KeePass2TrezorExt.cs" />
-    <Compile Include="Trezor.Net\Manager\TrezorManagerBrokerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrezorKeysCache.cs" />
     <Compile Include="Device\KeyDeviceStateEvent.cs" />
@@ -154,9 +148,15 @@
     <PackageReference Include="ILRepack.Lib.MSBuild.Task">
       <Version>2.0.34.2</Version>
     </PackageReference>
-    <PackageReference Include="Trezor.Net">
-      <Version>5.0.0-beta</Version>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
+      <Version>3.1.7</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Trezor.Net\Trezor.Net.csproj">
+      <Project>{da8d9457-c8b1-4e20-9eb1-a294151dda60}</Project>
+      <Name>Trezor.Net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="DownloadKeePass" BeforeTargets="BeforeBuild">

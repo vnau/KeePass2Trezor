@@ -1,16 +1,15 @@
 using Device.Net;
 using Hardwarewallets.Net.Model;
-using KeePass2Trezor.Override.Trezor.Net.Contracts.Common;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Trezor.Net;
 using Trezor.Net.Contracts;
 using Trezor.Net.Contracts.Bitcoin;
 using Trezor.Net.Contracts.Bootloader;
 using Trezor.Net.Contracts.Cardano;
+using Trezor.Net.Contracts.Common;
 using Trezor.Net.Contracts.Crypto;
 using Trezor.Net.Contracts.Debug;
 using Trezor.Net.Contracts.Ethereum;
@@ -22,9 +21,8 @@ using Trezor.Net.Contracts.Ontology;
 using Trezor.Net.Contracts.Ripple;
 using Trezor.Net.Contracts.Stellar;
 using Trezor.Net.Contracts.Tezos;
-using NotSupportedException = Trezor.Net.NotSupportedException;
 
-namespace KeePass2Trezor.Override.Trezor.Net
+namespace Trezor.Net
 {
     public class TrezorManager : TrezorManagerBase<MessageType>
     {
@@ -42,7 +40,7 @@ namespace KeePass2Trezor.Override.Trezor.Net
             EnterPinArgs enterPinCallback,
             EnterPinArgs enterPassphraseCallback,
             IDevice trezorDevice,
-            ILogger<KeePass2Trezor.Override.Trezor.Net.TrezorManagerBase<MessageType>> logger = null,
+            ILogger logger = null,
             ICoinUtility coinUtility = null) : base(
                 enterPinCallback,
                 enterPassphraseCallback,
@@ -72,7 +70,7 @@ namespace KeePass2Trezor.Override.Trezor.Net
 
         #region Protected Properties
 
-        protected override string ContractNamespace => "KeePass2Trezor.Override.Trezor.Net.Contracts";
+        protected override string ContractNamespace => "Trezor.Net.Contracts";
 
         protected override bool? IsOldFirmware => Features?.MajorVersion < 2 && Features?.MinorVersion < 8;
 
@@ -173,7 +171,7 @@ namespace KeePass2Trezor.Override.Trezor.Net
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error Getting Trezor Address {LogSection}", LogSection);
+                Logger?.LogError(ex, "Error Getting Trezor Address {LogSection}", LogSection);
                 throw;
             }
         }

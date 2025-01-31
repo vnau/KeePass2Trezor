@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace KeePass2Trezor.Override.Trezor.Net.Manager
+namespace Trezor.Net.Manager
 {
     public class TrezorManagerConnectionEventArgs<TMessageType> : EventArgs
     {

@@ -1,7 +1,7 @@
 ﻿using KeePass2Trezor.Logger;
-using KeePass2Trezor.Override.Trezor.Net.Contracts.Common;
 using Microsoft.Extensions.Logging;
 using System;
+using Trezor.Net.Contracts.Common;
 
 namespace KeePass2Trezor.Device
 {

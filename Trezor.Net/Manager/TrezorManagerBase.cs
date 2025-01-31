@@ -9,10 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Trezor.Net;
-using ICoinUtility = Trezor.Net.ICoinUtility;
 
-namespace KeePass2Trezor.Override.Trezor.Net
+namespace Trezor.Net
 {
     /// <summary>
     /// An interface for dealing with the Trezor that works across all platforms
@@ -40,14 +38,14 @@ namespace KeePass2Trezor.Override.Trezor.Net
             EnterPinArgs enterPinCallback,
             EnterPinArgs enterPassphraseCallback,
             IDevice device,
-            ILogger<TrezorManagerBase<TMessageType>> logger = null,
+            ILogger logger = null,
             ICoinUtility coinUtility = null)
-        { 
+        {
             CoinUtility = coinUtility ?? DefaultCoinUtility.Instance;
             _EnterPinCallback = enterPinCallback;
             _EnterPassphraseCallback = enterPassphraseCallback;
             Device = device ?? throw new ArgumentNullException(nameof(device));
-            Logger = logger ?? NullLoggerFactory.Instance.CreateLogger<TrezorManagerBase<TMessageType>>();;
+            Logger = logger;
         }
 
         #endregion Protected Constructors
@@ -369,7 +367,7 @@ namespace KeePass2Trezor.Override.Trezor.Net
 
             var msg = Deserialize(messageType, allData);
 
-            Logger.LogInformation($"Read: {msg}", LogSection);
+            Logger?.LogInformation($"Read: {msg}", LogSection);
 
             return msg;
         }

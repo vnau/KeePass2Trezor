@@ -13,7 +13,6 @@ namespace KeePass2Trezor.Device
             _logger = logger;
         }
 
-
         #region ILoggerFactory implementation
         public ILogger CreateLogger(string name)
         {

@@ -5,9 +5,9 @@ using System;
 using Trezor.Net;
 using Trezor.Net.Contracts;
 
-namespace KeePass2Trezor.Override.Trezor.Net.Manager
+namespace Trezor.Net.Manager
 {
-    internal class TrezorManagerBroker : TrezorManagerBrokerBase<TrezorManager, MessageType>, IDisposable
+    public class TrezorManagerBroker : TrezorManagerBrokerBase<TrezorManager, MessageType>
     {
         #region Constructor
         public TrezorManagerBroker(
@@ -23,8 +23,7 @@ namespace KeePass2Trezor.Override.Trezor.Net.Manager
                 pollInterval,
                 deviceFactory,
                 coinUtility,
-                loggerFactory
-                )
+                loggerFactory)
         {
         }
         #endregion
@@ -35,6 +34,7 @@ namespace KeePass2Trezor.Override.Trezor.Net.Manager
 #if TREZORNET4
             return new TrezorManager(EnterPinArgs, EnterPassphraseArgs, device);
 #else
+
             var logger = LoggerFactory.CreateLogger<TrezorManagerBase<MessageType>>();
             return new TrezorManager(EnterPinArgs, EnterPassphraseArgs, device, logger);
 #endif
