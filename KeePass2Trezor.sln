@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeePass2Trezor", "KeePass2T
 		{DA8D9457-C8B1-4E20-9EB1-A294151DDA60} = {DA8D9457-C8B1-4E20-9EB1-A294151DDA60}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trezor.Net", "Trezor.Net\Trezor.Net.csproj", "{DA8D9457-C8B1-4E20-9EB1-A294151DDA60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trezor.Net", "Trezor.Net\src\Trezor.Net\Trezor.Net.csproj", "{DA8D9457-C8B1-4E20-9EB1-A294151DDA60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

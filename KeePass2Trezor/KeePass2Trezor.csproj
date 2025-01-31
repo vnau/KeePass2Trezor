@@ -153,7 +153,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Trezor.Net\Trezor.Net.csproj">
+    <ProjectReference Include="..\Trezor.Net\src\Trezor.Net\Trezor.Net.csproj">
       <Project>{da8d9457-c8b1-4e20-9eb1-a294151dda60}</Project>
       <Name>Trezor.Net</Name>
     </ProjectReference>
