@@ -15,14 +15,6 @@ The **KeePass2Trezor** plugin for [KeePass 2.x](https://keepass.info/) leverages
 It supports Trezor One, Model T and Safe 3 on Windows and Linux.
 <img align="right" width="300" height="300" alt="Using Trezor Hardware Wallet as key provider for KeePass 2.x" src="images/kp2t_animation.gif">
 
-> [!CAUTION]
-> There have been reports of the add-in failing with a protobuf error on firmware version 2.8.7 (22 January 2025), affecting multiple Trezor wallet models (including the Trezor Safe 5 on firmware version 2.8.0).
->
-> To prevent this issue, it is recommended to either stay on a previous firmware version or use an alternative master key source before updating the firmware.
-> If the issue has already occurred, the only way at the current moment to regain access to KeePass database is by downgrading the firmware. **Please ensure you have your recovery seed before attempting to downgrade firmware.**
->
-> A fix is in progress and is expected to be released by the end of this week.
-
 ## Features
 
 - **Secure Encryption:** Your KeePass database is securely encrypted using your personal Trezor device.
@@ -61,9 +53,11 @@ While the plugin works on Linux, additional steps are required:
 
 ## Security Considerations
 
-⚠ If your device is lost or broken, you will need to purchase a new [Trezor](https://trezor.io/) or build a [PiTrezor](https://www.pitrezor.com) and initialize it using the saved seed phrase to regain access to the KeePass database.
+> [!WARNING]
+> If your device is lost or broken, you will need to purchase a new [Trezor](https://trezor.io/) or build a [PiTrezor](https://www.pitrezor.com) and initialize it using the saved seed phrase to regain access to the KeePass database.
 
-⚠ Exporting the database in any format except _kdbx_ will cause loss of the Key ID and make decryption impossible. This is because other formats do not support public custom data (unencrypted) where the Key ID is stored.
+> [!WARNING]
+> Exporting the database in any format except _kdbx_ will cause loss of the Key ID and make decryption impossible. This is because other formats do not support public custom data (unencrypted) where the Key ID is stored.
 
 ## Technical Details
 
