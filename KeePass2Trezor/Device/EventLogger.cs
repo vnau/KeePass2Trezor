@@ -1,11 +1,7 @@
-﻿#if TREZORNET4
-using Device.Net;
-#else
-using Microsoft.Extensions.Logging;
-#endif
-using System;
-using KeePass2Trezor.Logger;
+﻿using KeePass2Trezor.Logger;
 using KeePass2Trezor.Override.Trezor.Net.Contracts.Common;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace KeePass2Trezor.Device
 {
@@ -16,12 +12,15 @@ namespace KeePass2Trezor.Device
     /// </summary>
     internal class EventLogger : ILogger
     {
-        private IDeviceStateEventReceiver receiver;
-        private string name;
-        public EventLogger(IDeviceStateEventReceiver receiver, string name)
+        private readonly IDeviceStateEventReceiver _receiver;
+        private readonly string _name;
+        private readonly ILogger _logger;
+
+        public EventLogger(IDeviceStateEventReceiver receiver, string name, ILogger logger)
         {
-            this.receiver = receiver;
-            this.name = name;
+            _receiver = receiver;
+            _name = name;
+            _logger = logger;
         }
 
 #if TREZORNET4
@@ -33,6 +32,7 @@ namespace KeePass2Trezor.Device
 #else
         public IDisposable BeginScope(string messageFormat, params object[] args)
         {
+            _logger?.BeginScope(messageFormat, args);
             return new DummyDisposable();
         }
 
@@ -42,24 +42,29 @@ namespace KeePass2Trezor.Device
 
         public void LogError(EventId eventId, Exception exception, string message, params object[] args)
         {
+            _logger?.LogError(eventId, exception, message, args);
         }
 
         public void LogError(Exception exception, string message, params object[] args)
         {
+            _logger?.LogError(exception, message, args);
         }
 
         public void LogTrace<T>(T state)
         {
+            _logger?.LogTrace(state);
         }
 
         public void LogWarning(string message, params object[] args)
         {
+            _logger?.LogWarning(message, args);
         }
 
         public void LogInformation(string message, params object[] args)
         {
-            if (message.StartsWith("Write: ") && message.EndsWith(nameof(ButtonAck)));
-                receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.WaitConfirmation));
+            _logger?.LogInformation(message, args);
+            if (message.StartsWith("Write: ") && message.EndsWith(nameof(ButtonAck)))
+                _receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.WaitConfirmation));
             //if (message == "Closing device ... {deviceId}")
             //    receiver.KeyDeviceEventFired(new KeyDeviceStateEvent(KeyDeviceState.Disconnected));
         }

@@ -1,4 +1,8 @@
-﻿using KeePass.UI;
+﻿using KeePass.Resources;
+using KeePass.UI;
+using KeePass2Trezor.Device;
+using KeePass2Trezor.Forms;
+using KeePass2Trezor.Properties;
 using KeePassLib;
 using KeePassLib.Interfaces;
 using KeePassLib.Keys;
@@ -9,10 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using KeePass2Trezor.Forms;
-using KeePass2Trezor.Device;
-using KeePass2Trezor.Properties;
-using KeePass.Resources;
 using Trezor.Net;
 
 namespace KeePass2Trezor
@@ -197,7 +197,7 @@ namespace KeePass2Trezor
 
             try
             {
-                device = new TrezorDevice();
+                device = new TrezorDevice(null);
                 device.OnChangeState += (Object sender, KeyDeviceStateEvent stateEvent) =>
                 {
                     var state = stateEvent.State;
@@ -292,23 +292,14 @@ namespace KeePass2Trezor
             }
             finally
             {
-                if (device != null)
-                {
-                    device.Close();
-                }
+                device?.Close();
 
                 // Wait for the task complete
-                if (task != null)
-                {
-                    task.Wait();
-                    task.Dispose();
-                }
+                task?.Wait();
+                task?.Dispose();
 
                 // Dispose resources
-                if (device != null)
-                {
-                    device.Dispose();
-                }
+                device?.Dispose();
             }
         }
     }
