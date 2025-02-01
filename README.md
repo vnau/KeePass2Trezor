@@ -67,6 +67,11 @@ While the plugin works on Linux, additional steps are required:
 
 🌱 Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
 
+If you feel like spreading some digital love, here are a couple of wallets for your crypto spare change:
+
+🪙 Bitcoin: ```bc1qrf697vnj424jqaam7fx0fygdl5gvflaxex9pph```  
+💎 Ethereum: ```0x288CFF4732f098d55909d815D4487eD46B100CAE``` 
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
